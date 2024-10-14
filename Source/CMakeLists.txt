@@ -4,7 +4,7 @@ message("Begin generate.........................................................
 
 # Проект
 set(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(PROJECT_NAME System)
+set(PROJECT_NAME Movement)
 
 set(PROJECT_DIR_FILES "${PROJECT_DIR}/Engine/Platform/Win")
 file(GLOB_RECURSE PROJECT_INCLUDE ${PROJECT_DIR_FILES}/*.h)
