@@ -1,0 +1,86 @@
+{
+  "backColor": [
+    0.6,
+    0.8,
+    1,
+    1
+  ],
+  "objects": [
+    {
+      "name": "Triangle",
+	  "model": "Plane100",
+      "physics": "triangle",
+      "pos": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "Box1",
+      "model": "Box1",
+      "physics": "triangle",
+      "pos": [
+        5,
+        5,
+        15
+      ]
+    },
+    {
+      "name": "SphereBox",
+      "model": "SphereBox",
+      "physics": "triangle",
+      "pos": [
+        5,
+        5,
+        5
+      ]
+    },
+    {
+      "model": "SphereBox",
+      "physics": "triangle",
+      "pos": [
+        -5,
+        -5,
+        10
+      ]
+    },
+    {
+      "model": "Sphere",
+      "physics": "triangle",
+      "pos": [
+        -5,
+        5,
+        15
+      ]
+    },
+    {
+      "name": "Sphere",
+      "model": "Sphere",
+      "physics": "convex",
+      "pos": [
+        -10,
+        10,
+        50
+      ]
+    },
+    {
+      "model": "Sphere",
+      "physics": "convex",
+      "pos": [
+        10,
+        -10,
+        50
+      ]
+    },
+    {
+      "model": "SphereBox",
+      "physics": "convex",
+      "pos": [
+        10,
+        10,
+        150
+      ]
+    }
+  ]
+}
