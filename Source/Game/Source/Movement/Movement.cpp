@@ -9,6 +9,7 @@
 #include "Object/Map.h"
 #include <Object/Object.h>
 #include <Object/Model.h>
+#include "Glider/Glider.h"
 
 ModelPtr _skyboxModel;
 
@@ -34,6 +35,15 @@ void Movement::update()
 		}
 
 		_mapGame->action();
+
+
+		// Player
+		if (CameraControlOutside* cameraPtr = dynamic_cast<CameraControlOutside*>(_camearCurrent.get())) {
+			if (Object::Ptr objectPtr = _mapGame->getObjectPtrByName("Player")) {
+				const glm::vec3 pos = objectPtr->getPos();
+				cameraPtr->SetPosOutside(pos);
+			}
+		}
 	}
 }
 
@@ -66,10 +76,10 @@ void Movement::draw()
 
 	// Draw
 	ShaderDefault::Instance().Use();
-	Draw2::SetModelMatrix(glm::mat4x4(1.f));
+	Draw2::DepthTest(true);
 
 	for (Object::Ptr& objectPtr : _mapGame->GetObjects()) {
-		Draw2::SetModelMatrix(objectPtr->getMatrix());
+		Draw2::SetModelMatrixClass<ShaderDefault>(objectPtr->getMatrix());
 		Draw2::Draw(objectPtr->getModel());
 	}
 }
@@ -84,6 +94,21 @@ bool Movement::Load()
 {
 	if (_mapGame = make_shared<Map>("PhysX/MapPhysX")) {
 		Draw2::SetClearColor(_mapGame->getRed(), _mapGame->getGreen(), _mapGame->getBlue(), _mapGame->getAlpha());
+
+		for (int iX = -300; iX < 300; iX += 100) {
+			for (int iY = -300; iY < 300; iY += 100) {
+				if (iX == 0 && iY == 0) {
+					continue;
+				}
+				Object& object = _mapGame->addObjectToPos("Plane100", { iX, iY, 0.f });
+				object.setTypeActorPhysics(Engine::Physics::Type::TRIANGLE);
+			}
+		}
+
+		// Player
+		Object::Ptr gliderPtr(new Glider("Player", "Sphere", { 0.f, 0.f, 100.f }));
+		static_cast<Glider*>(gliderPtr.get())->EnableControl(true);
+		_mapGame->addObject(gliderPtr);
 	}
 
 	return true;
@@ -100,7 +125,7 @@ void Movement::InitСameras()
 		cameraPtr->SetPerspective(10000000.f, 1.f, 45.f);
 		cameraPtr->SetPos({ 50.f, 50.f, 50.f });
 		cameraPtr->SetDirect({ -0.524f, -0.514f, -0.679f });
-
+		cameraPtr->SetDistanceOutside(50.f);
 		cameraPtr->SetSpeed(1.0);
 		cameraPtr->Enable(true);
 	}
