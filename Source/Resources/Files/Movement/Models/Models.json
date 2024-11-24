@@ -12,6 +12,12 @@
     "texture": "Textures/Common/Box.jpg",
     "scale": 2
   },
+   "Car": {
+    "shape": "Models/Car.obj",
+    "_texture": "Textures/Common/Box.jpg",
+    "scale": 5,
+	"texture" : "Textures/Common/metal_texture_00.jpg"
+  },
   "Sphere": {
     "shape": "Models/Sphere_01.obj",
     "texture": "Textures/Ambient.png",

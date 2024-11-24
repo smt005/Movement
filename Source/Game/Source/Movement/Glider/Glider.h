@@ -23,10 +23,18 @@ public:
 
 	void EnableControl(bool enable);
 	void Move(const MoveDirect direct, const float kForce = 1.f);
-
 	const glider::Params& GetParams();
+
+public:
+	void action() override;
+
+private:
+	float GetHeight();
+	void DrawDebug(const glm::vec3& angularVelocity);
 
 private:
 	Engine::Callback::Ptr _callbackPtr;
 	glider::Params::Ptr paramsPtr;
+	glm::vec3 _torqueForce = { 0.f, 0.f, 0.f };
+	Engine::Physics::Force _torqueForceType = Engine::Physics::Force::VELOCITY_CHANGE;
 };

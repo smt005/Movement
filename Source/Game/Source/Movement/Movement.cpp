@@ -6,20 +6,26 @@
 #include <Draw/Camera/CameraControlOutside.h>
 #include <Draw2/Draw2.h>
 #include <Draw2/Shader/ShaderDefault.h>
+#include <Draw2/Shader/ShaderLine.h>
 #include "Object/Map.h"
 #include <Object/Object.h>
 #include <Object/Model.h>
 #include "Glider/Glider.h"
+#include "ImGuiManager/UI.h"
+#include "ImGuiManager/Editor/Console.h"
 
 ModelPtr _skyboxModel;
 
 void Movement::init()
 {
 	ShaderDefault::Instance().Init("Default.vert", "Default.frag");
+	ShaderLinePM::Instance().Init("LinePM.vert", "Line.frag");
 
 	InitСameras();
 	Load();
 	InitPhysic();
+
+	UI::ShowWindow<Editor::Console>();
 }
 
 void Movement::close()
@@ -30,12 +36,12 @@ void Movement::close()
 void Movement::update()
 {
 	if (_mapGame) {
-		if (Engine::Physics::updateScene(Engine::Core::deltaTime())) {
+		volatile static double deltaTime = 1.f;
+		if (Engine::Physics::updateScene(deltaTime)) {
 			_mapGame->updatePhysixs();
 		}
 
 		_mapGame->action();
-
 
 		// Player
 		if (CameraControlOutside* cameraPtr = dynamic_cast<CameraControlOutside*>(_camearCurrent.get())) {
@@ -82,6 +88,8 @@ void Movement::draw()
 		Draw2::SetModelMatrixClass<ShaderDefault>(objectPtr->getMatrix());
 		Draw2::Draw(objectPtr->getModel());
 	}
+
+	Draw2::DrawFunctions();
 }
 
 void Movement::resize()
@@ -106,7 +114,7 @@ bool Movement::Load()
 		}
 
 		// Player
-		Object::Ptr gliderPtr(new Glider("Player", "Sphere", { 0.f, 0.f, 100.f }));
+		Object::Ptr gliderPtr(new Glider("Player", "Car", { 0.f, 0.f, 100.f }));
 		static_cast<Glider*>(gliderPtr.get())->EnableControl(true);
 		_mapGame->addObject(gliderPtr);
 	}
