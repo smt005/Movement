@@ -45,7 +45,8 @@ void Movement::update()
 
 		// Player
 		if (CameraControlOutside* cameraPtr = dynamic_cast<CameraControlOutside*>(_camearCurrent.get())) {
-			if (Object::Ptr objectPtr = _mapGame->getObjectPtrByName("Player")) {
+			if (Glider* objectPtr = dynamic_cast<Glider*>(_mapGame->getObjectPtrByName("Player").get())) {
+				objectPtr->Update();
 				const glm::vec3 pos = objectPtr->getPos();
 				cameraPtr->SetPosOutside(pos);
 			}

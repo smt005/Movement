@@ -27,14 +27,26 @@ public:
 
 public:
 	void action() override;
+	void Update();
 
 private:
 	float GetHeight();
+
+private:
 	void DrawDebug(const glm::vec3& angularVelocity);
 
 private:
 	Engine::Callback::Ptr _callbackPtr;
 	glider::Params::Ptr paramsPtr;
+
+	glm::vec3 _velocity = { 0.f, 0.f, 0.f };
+	glm::vec3 _force = { 0.f, 0.f, 0.f };
+
+	glm::vec3 _angularVelocity = { 0.f, 0.f, 0.f };
+	glm::vec3 _vectorAngularVelocity = { 0.f, 0.f, 0.f };
 	glm::vec3 _torqueForce = { 0.f, 0.f, 0.f };
+	glm::vec3 _vectorTorqueForce = { 0.f, 0.f, 0.f };
+	
+
 	Engine::Physics::Force _torqueForceType = Engine::Physics::Force::VELOCITY_CHANGE;
 };

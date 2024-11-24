@@ -178,40 +178,85 @@ void Glider::action()
 		auto mat = this->getMatrix();
 		glm::vec4 direct(0.f, 0.f, 1.f, 0.f);
 		direct = mat * direct;
+		glm::vec4 directDebug = direct;
+		directDebug.z = 0.f;
+		volatile static int _ver0_ = 1;
+		volatile static int _ver1_ = 1;
 
-		volatile static bool _ver_ = false;
-		if (_ver_) {
-			static float factor = 0.001f;
+		if (_ver0_ == 0) {
+			static float factor = 0.1f;
 			direct.y = direct.y * factor;
 			direct.x = direct.x * factor;
 		}
-		else {
+		else if (_ver0_ == 1) {
 			static float factor = 1.91f;
 			{
 				if (direct.y != 0.f) {
-					float znak = direct.y / std::abs(direct.y);
-					direct.y = direct.y * direct.y * znak * factor;
+					float sign = direct.y / std::abs(direct.y);
+					direct.y = direct.y * direct.y * sign * factor;
 				}
 			}
 			{
 				if (direct.x != 0.f) {
-					float znak = direct.x / std::abs(direct.x);
-					direct.x = direct.x * direct.x * znak * factor;
+					float sign = direct.x / std::abs(direct.x);
+					direct.x = direct.x * direct.x * sign * factor;
 				}
 			}
 		}
 
 		direct.z = 0.f;
 
-		glm::vec3 angularVelocity(direct.y, -direct.x, 0.f);
+		glm::vec3 forceAngularVelocity(direct.y, -direct.x, 0.f);
+		const glm::vec3 angularVelocity = GetAngularVelocity();
 
-		float len = glm::length(angularVelocity);
-		static float minValue = 0.00001f;
-		if (len > minValue) {
-			addTorque(angularVelocity, _torqueForceType);
+		if (_ver1_ == 1) {
+			// X
+			{
+				float sign0 = false;
+				float sign1 = false;
+				if (direct.x != 0) {
+					sign0 = direct.x / std::abs(direct.x);
+				}
+				if (angularVelocity.y != 0) {
+					sign1 = !angularVelocity.y / std::abs(angularVelocity.y);
+				}
+				if ((sign0 > 0 && sign1 > 0) || (sign0 < 0 && sign1 < 0)) {
+					forceAngularVelocity.x = 0.f;
+				}
+			}
+			// Y
+			{
+				float sign0 = false;
+				float sign1 = false;
+				if (direct.y != 0) {
+					sign0 = direct.y / std::abs(direct.y);
+				}
+				if (angularVelocity.x != 0) {
+					sign1 = !angularVelocity.x / std::abs(angularVelocity.x);
+				}
+				if ((sign0 > 0 && sign1 > 0) || (sign0 < 0 && sign1 < 0)) {
+					forceAngularVelocity.y = 0.f;
+				}
+			}
 		}
 
-		DrawDebug(angularVelocity);
+		float len = glm::length(forceAngularVelocity);
+		static float minValue = 0.00001f;
+		if (len > minValue) {
+			addTorque(forceAngularVelocity, _torqueForceType);
+		}
+
+		if (length(directDebug) < 0.001f) {
+			this->SetAngularVelocity({0.f, 0.f, 0.f});
+		}
+
+		glm::vec3 forceAngularVelocityDebug;
+		forceAngularVelocityDebug.x = forceAngularVelocity.y;
+		forceAngularVelocityDebug.y = -forceAngularVelocity.x;
+		forceAngularVelocityDebug.z = 0.f;
+		//cout << "direct: [" << directDebug.x << ", " << directDebug.y << ", " << directDebug.z << "] vel: [" << angularVelocity.x << ", " << angularVelocity.y << ", " << angularVelocity.z << "] force: [" << forceAngularVelocityDebug.x << ", " << forceAngularVelocityDebug.y << ", " << forceAngularVelocityDebug.z << "]\n";
+
+		DrawDebug(forceAngularVelocity);
 
 		// Debug
 		{
@@ -222,12 +267,24 @@ void Glider::action()
 	}
 }
 
+void Glider::Update()
+{
+	_velocity = this->GetLinearVelocity();
+	_angularVelocity = this->GetAngularVelocity();
+	_vectorAngularVelocity.x = _angularVelocity.y;
+	_vectorAngularVelocity.y = -_angularVelocity.x;
+	_vectorAngularVelocity.z = 0.f;
+
+	cout << "v: [" << _velocity.x << ", " << _velocity.y << ", " << _velocity.z << "] av: [" << _angularVelocity.x << ", " << _angularVelocity.y << ", " << _angularVelocity.z << "] vav: [" << _vectorAngularVelocity.x << ", " << _vectorAngularVelocity.y << ", " << _vectorAngularVelocity.z << "]" << endl;
+}
+
 float Glider::GetHeight()
 {
 	float height = getPos().z;
 	return height;
 }
 
+// Debug
 void Glider::DrawDebug(const glm::vec3& angularVelocity)
 {
 	Draw2::AddFunction([this, angularVelocity]() mutable {
