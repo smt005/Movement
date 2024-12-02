@@ -24,6 +24,7 @@ public:
 	void InitPhysic();
 	bool Load();
 	void Save();
+	void GenerateMap();
 
 public:
 	std::shared_ptr<Map> _mapGame;

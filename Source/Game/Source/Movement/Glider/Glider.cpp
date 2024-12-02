@@ -128,7 +128,9 @@ glm::vec3 RotateVectorByMatrix(const glm::vec3& vec, const glm::mat4& mat) {
 void Glider::Move(const MoveDirect direct, const float kForce)
 {
 	//glm::vec3 cameraDirect = ExtractDirectionVector(getMatrix());
-	glm::vec3 cameraDirect = RotateVectorByMatrix({0.f, 1.f, 0.f}, getMatrix());
+	//glm::vec3 cameraDirect = RotateVectorByMatrix({0.f, 1.f, 0.f}, getMatrix());
+	glm::vec4 _cameraDirect_ = getMatrix()* glm::vec4(0.f, 1.f, 0.f, 0.f);
+	glm::vec3 cameraDirect = { _cameraDirect_.x, _cameraDirect_.y, 0.f };
 
 	cout << "cameraDirect: ["; help::PrintXYZ(cameraDirect, ", ", 0); cout << "]" << endl;
 	cameraDirect.z = 0.f;
@@ -198,6 +200,8 @@ const Params& Glider::GetParams()
 
 void Glider::action()
 {
+	Rotate();
+
 	DrawDebug();
 
 	// Высота
@@ -242,7 +246,7 @@ void Glider::action()
 
 	// Рыскание
 	{
-		Stabilization();
+		//Stabilization();
 	}
 
 	//...
@@ -253,13 +257,19 @@ void Glider::action()
 	ResetForce();
 }
 
+void Glider::Rotate()
+{
+	auto c = Camera::GetLink().Direct();
+	_camera_ = glm::normalize(glm::vec3(c.x, c.y, 0.f));
+}
+
 void Glider::Stabilization()
 {
 	glm::mat4x4  mat = getMatrix();
 	
 	//static float rotateZ = 0.f;
 
-	/*{
+	{
 		auto AngleXY = [](const auto& vec0, const auto& vec1) {
 			// Расчёт длины векторов
 			auto Magnitude = [](const auto& vec) {
@@ -296,11 +306,13 @@ void Glider::Stabilization()
 		auto camDirect = Camera::GetLink().Direct();
 		glm::vec3 _camdirect3_ = glm::normalize(glm::vec3(camDirect.x, camDirect.y, 0.f));
 
-		rotateZ = -AngleXY(_direct3_, _camdirect3_) * 3.14159265358979323846264338327950288;
-		help::log(rotateZ);
-	}*/
+		//rotateZ = 90;// 57.2958f; // -90;// -AngleXY(_direct3_, _camdirect3_);// *3.14159265358979323846264338327950288;
+		rotateZ = -AngleXY(_direct3_, _camdirect3_) * 0.5 * 3.14159265358979323846264338327950288;
+		//help::log(rotateZ);
+	}
 
 	mat = glm::rotate(mat, rotateZ, { 0.f, 0.f, 1.f });
+	help::log(rotateZ);
 	//rotateZ = 0;
 
 	glm::quat q = glm::quat_cast(mat);
@@ -322,7 +334,7 @@ void Glider::Stabilization()
 	_torqueForce += correctiveTorque + dampingTorque;
 }
 
-glm::vec3 Glider::Rotate()
+/*glm::vec3 Glider::Rotate()
 {
 	auto AngleXY = [](const auto& vec0, const auto& vec1) {
 		// Расчёт длины векторов
@@ -358,7 +370,7 @@ glm::vec3 Glider::Rotate()
 	glm::vec3 directCameraV3 = Camera::GetLink().Direct();
 	glm::vec3 directCamera = glm::normalize(glm::vec3(directCameraV3.x, directCameraV3.y, 0.f));
 
-	glm::vec4 directV4 = getMatrix() * glm::vec4(0.f, 1.f, 0.f, 1.f);
+	glm::vec4 directV4 = getMatrix() * glm::vec4(0.f, 1.f, 0.f, 0.f);
 	glm::vec3 direct = glm::normalize(glm::vec3(directV4.x, directV4.y, 0.f));
 	
 	volatile static float factor = 0.01f;
@@ -378,7 +390,7 @@ glm::vec3 Glider::Rotate()
 	else {
 		return glm::vec3(0.f, 0.f, 0.f);
 	}
-}
+}*/
 
 void Glider::Update()
 {
@@ -421,7 +433,7 @@ void Glider::DrawDebug()
 			{
 				// X
 				{
-					float red[] = { 1.f, 0.f, 0.f, 0.25f };
+					float red[] = { 1.f, 0.f, 0.f, 0.125f };
 					Draw2::SetColorClass<ShaderLinePM>(red);
 					glm::vec4 direct(1.f, 0.f, 0.f, 0.f);
 					direct = matSpace * direct;
@@ -433,7 +445,7 @@ void Glider::DrawDebug()
 
 				// Y
 				{
-					float green[] = { 0.f, 1.f, 0.f, 0.25f };
+					float green[] = { 0.f, 1.f, 0.f, 0.125f };
 					Draw2::SetColorClass<ShaderLinePM>(green);
 					glm::vec4 direct(0.f, 1.f, 0.f, 0.f);
 					direct = matSpace * direct;
@@ -445,7 +457,7 @@ void Glider::DrawDebug()
 
 				// Z
 				{	
-					float blue[] = { 0.f, 0.f, 1.f, 0.25f };
+					float blue[] = { 0.f, 0.f, 1.f, 0.125f };
 					Draw2::SetColorClass<ShaderLinePM>(blue);
 					glm::vec4 direct(0.f, 0.f, 1.f, 0.f);
 					direct = matSpace * direct;
@@ -460,7 +472,7 @@ void Glider::DrawDebug()
 			{
 				// X
 				{
-					float red[] = { 1.f, 0.f, 0.f, 0.5f };
+					float red[] = { 1.f, 0.f, 0.f, 0.25f };
 					Draw2::SetColorClass<ShaderLinePM>(red);
 					glm::vec4 direct(1.f, 0.f, 0.f, 0.f);
 					direct = getMatrix() * direct;
@@ -472,7 +484,7 @@ void Glider::DrawDebug()
 
 				// Y
 				{
-					float green[] = { 0.f, 1.f, 0.f, 0.5f };
+					float green[] = { 0.f, 1.f, 0.f, 0.25f };
 					Draw2::SetColorClass<ShaderLinePM>(green);
 					glm::vec4 direct(0.f, 1.f, 0.f, 0.f);
 					direct = getMatrix() * direct;
@@ -484,7 +496,7 @@ void Glider::DrawDebug()
 
 				// Z
 				{
-					float blue[] = { 0.f, 0.f, 1.f, 0.5f };
+					float blue[] = { 0.f, 0.f, 1.f, 0.25f };
 					Draw2::SetColorClass<ShaderLinePM>(blue);
 					glm::vec4 direct(0.f, 0.f, 1.f, 0.f);
 					direct = getMatrix() * direct;
@@ -498,16 +510,15 @@ void Glider::DrawDebug()
 			// Force
 			{
 				// X
-				/*{
-					float red[] = { 1.f, 0.9f, 0.9f, 1.f };
-					Draw2::SetColorClass<ShaderLinePM>(red);
-					glm::vec4 direct(_vectorTorqueForce.x, _vectorTorqueForce.y, _vectorTorqueForce.z, 1.f);
-					direct = getMatrix() * direct;
-					direct *= 100.f;
-					const float vertices[] = { 0.f, 0.f, 0.f, direct.x, direct.y, direct.z };
+				{
+					float white[] = { 1.f, 1.f, 1.f, 1.f };
+					Draw2::SetColorClass<ShaderLinePM>(white);
+					glm::vec3 camera = _camera_;
+					camera *= 100.f;
+					const float vertices[] = { 0.f, 0.f, 0.f, camera.x, camera.y, camera.z };
 					const unsigned int count = 2;
 					Draw2::drawLines(vertices, count);
-				}*/
+				}
 
 				// Y
 				/*{

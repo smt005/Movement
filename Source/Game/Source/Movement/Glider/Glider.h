@@ -25,11 +25,12 @@ public:
 
 	void EnableControl(bool enable);
 	void Move(const MoveDirect direct, const float kForce = 1.f);
-	glm::vec3 Rotate();
+	//glm::vec3 Rotate();
 	const glider::Params& GetParams();
 
 	void action() override;
 	void Stabilization();
+	void Rotate();
 	void Update();
 
 private:
@@ -46,4 +47,6 @@ private:
 	glm::vec3 _torqueForce = { 0.f, 0.f, 0.f };
 	float rotateZ = 0;
 	Engine::Physics::Force _torqueForceType = Engine::Physics::Force::VELOCITY_CHANGE;
+
+	glm::vec3 _camera_;
 };

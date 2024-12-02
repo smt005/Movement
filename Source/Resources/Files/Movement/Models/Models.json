@@ -31,6 +31,10 @@
 	"shape": "Models/Locations/Kolonna/Kolonna_300x300_100.obj",
 	"texture" : "Textures/Common/Zak.jpg"
   },
+  "Kolonna_300x300_100_280": {
+	"shape": "Models/Locations/Kolonna/Kolonna_300x300_100_280.obj",
+	"texture" : "Textures/Common/Zak.jpg"
+  },
   "Box1": {
     "shape": "Models/Box1.obj",
     "texture": "Textures/Common/Box.jpg"
