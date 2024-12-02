@@ -68,6 +68,9 @@ void Movement::draw()
 		mat[3][1] = camPos.y;
 		mat[3][2] = camPos.z;
 
+		static float rotateZ = 0.f;
+		mat = glm::rotate(mat, rotateZ, {0.f, 0.f, 1.f});
+		rotateZ += 0.0001f;
 		ShaderDefault::Instance().Use();
 		Draw2::SetModelMatrixClass<ShaderDefault>(mat);
 
@@ -104,18 +107,30 @@ bool Movement::Load()
 	if (_mapGame = make_shared<Map>("PhysX/MapPhysX")) {
 		Draw2::SetClearColor(_mapGame->getRed(), _mapGame->getGreen(), _mapGame->getBlue(), _mapGame->getAlpha());
 
-		for (int iX = -300; iX < 300; iX += 100) {
-			for (int iY = -300; iY < 300; iY += 100) {
-				if (iX == 0 && iY == 0) {
-					continue;
-				}
-				Object& object = _mapGame->addObjectToPos("Plane100", { iX, iY, 0.f });
+		for (int iX = -900; iX < 900; iX += 300) {
+			for (int iY = -900; iY < 900; iY += 300) {
+				std::string nameModel;
+				const int numEnding = iX == 0 && iY == 0 ? 0 :  help::random_i(0, 6);
+
+				switch (numEnding) {
+				case 0: nameModel = "Kolonna_300x300_0"; break;
+				case 1: nameModel = "Kolonna_300x300_10"; break;
+				case 2: nameModel = "Kolonna_300x300_20"; break;
+				case 3: nameModel = "Kolonna_300x300_30"; break;
+				case 4: nameModel = "Kolonna_300x300_40"; break;
+				case 5: nameModel = "Kolonna_300x300_50"; break;
+				case 6: nameModel = "Kolonna_300x300_100"; break;
+				default : nameModel = "Kolonna_300x300_0";
+				};
+				//cout << "model: " << numEnding << " => " << nameModel << endl;
+
+				Object& object = _mapGame->addObjectToPos(nameModel, { iX, iY, 0.f });
 				object.setTypeActorPhysics(Engine::Physics::Type::TRIANGLE);
 			}
 		}
 
 		// Player
-		Object::Ptr gliderPtr(new Glider("Player", "Car", { 0.f, 0.f, 100.f }));
+		Object::Ptr gliderPtr(new Glider("Player", "Car", { 0.f, 0.f, 50.f }));
 		static_cast<Glider*>(gliderPtr.get())->EnableControl(true);
 		_mapGame->addObject(gliderPtr);
 	}

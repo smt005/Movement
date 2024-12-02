@@ -9,6 +9,18 @@
 #include "Common/Help.h"
 #include "Draw2/Draw2.h"
 #include <Draw2/Shader/ShaderLine.h>
+#include <Physics/Physics.h>
+#include <Common/PrintTemplate.h>
+//#include "glm/ext/matrix_transform.hpp"
+
+#include <Common/Help.h>
+#include <Draw/Camera/CameraControlOutside.h>
+#include <Draw2/Draw2.h>
+#include <Draw2/Shader/ShaderDefault.h>
+#include <Draw2/Shader/ShaderLine.h>
+#include "Object/Map.h"
+#include <Object/Model.h>
+#include "ImGuiManager/UI.h"
 
 using namespace glider;
 
@@ -31,31 +43,39 @@ void Glider::EnableControl(bool enable)
 			if (Engine::Callback::pressKey(Engine::VirtualKey::S)) {
 				Move(MoveDirect::BACK, kForce);
 			}
-			if (Engine::Callback::pressKey(Engine::VirtualKey::D)) {
-				Move(MoveDirect::RIGHT, kForce);
-			}
 			if (Engine::Callback::pressKey(Engine::VirtualKey::A)) {
-				Move(MoveDirect::LEFT, kForce);
+				//Move(MoveDirect::LEFT, kForce);
+				rotateZ += -0.01;
+			}
+			if (Engine::Callback::pressKey(Engine::VirtualKey::D)) {
+				//Move(MoveDirect::RIGHT, kForce);
+				rotateZ += 0.01;
 			}
 			if (Engine::Callback::pressKey(Engine::VirtualKey::R)) {
-				Move(MoveDirect::TOP, kForce);
+				//Move(MoveDirect::FORVARD_HORIZONT, kForce);
 			}
 			if (Engine::Callback::pressKey(Engine::VirtualKey::F)) {
-				Move(MoveDirect::DOWN, kForce);
+				//Move(MoveDirect::BACK_HORIZONT, kForce);
 			}
 
 			//...
+			static glm::vec3 vectorTorqueForce(0.f, 0.f, 0.f);
+
 			if (Engine::Callback::pressKey(Engine::VirtualKey::I)) {
-				_torqueForce.x += 0.01f;
+				vectorTorqueForce.y += 0.001f;
+				_torqueForce = vectorTorqueForce;
 			}
 			if (Engine::Callback::pressKey(Engine::VirtualKey::K)) {
-				_torqueForce.x -= 0.01f;
-			}
-			if (Engine::Callback::pressKey(Engine::VirtualKey::J)) {
-				_torqueForce.y -= 0.01f;
+				vectorTorqueForce.y -= 0.001f;
+				_torqueForce = vectorTorqueForce;
 			}
 			if (Engine::Callback::pressKey(Engine::VirtualKey::L)) {
-				_torqueForce.y += 0.01f;
+				vectorTorqueForce.x += 0.001f;
+				_torqueForce = vectorTorqueForce;
+			}
+			if (Engine::Callback::pressKey(Engine::VirtualKey::J)) {
+				vectorTorqueForce.x -= 0.001f;
+				_torqueForce = vectorTorqueForce;
 			}
 
 			// Height
@@ -71,13 +91,13 @@ void Glider::EnableControl(bool enable)
 				if (Engine::Callback::pressKey(Engine::VirtualKey::VK_0)) {
 					_torqueForceType = Engine::Physics::Force::ACCELERATION;
 				}
-				else if (Engine::Callback::pressKey(Engine::VirtualKey::VK_2)) {
+				else if (Engine::Callback::pressKey(Engine::VirtualKey::VK_1)) {
 					_torqueForceType = Engine::Physics::Force::FORCE;
 				}
-				else if (Engine::Callback::pressKey(Engine::VirtualKey::VK_3)) {
+				else if (Engine::Callback::pressKey(Engine::VirtualKey::VK_2)) {
 					_torqueForceType = Engine::Physics::Force::IMPULSE;
 				}
-				else if (Engine::Callback::pressKey(Engine::VirtualKey::VK_4)) {
+				else if (Engine::Callback::pressKey(Engine::VirtualKey::VK_3)) {
 					_torqueForceType = Engine::Physics::Force::VELOCITY_CHANGE;
 				}
 			}
@@ -89,8 +109,28 @@ void Glider::EnableControl(bool enable)
 	}
 }
 
-void Glider::Move(const MoveDirect direct, const float kForce) {
-	glm::vec3 cameraDirect = Camera::GetLink().Direct();
+glm::vec3 ExtractDirectionVector(const glm::mat4& mat) {
+	// Третий столбец матрицы (индекс 2): вектор направления
+	glm::vec3 direction(mat[2][0], mat[2][1], mat[2][2]);
+
+	// Нормализация вектора (если требуется единичный вектор)
+	return glm::normalize(direction);
+}
+
+glm::vec3 RotateVectorByMatrix(const glm::vec3& vec, const glm::mat4& mat) {
+	// Преобразование в vec4 с w = 0.0 (для исключения трансляции)
+	glm::vec4 rotatedVec = mat * glm::vec4(vec, 0.0f);
+
+	// Возврат результата как vec3
+	return glm::vec3(rotatedVec);
+}
+
+void Glider::Move(const MoveDirect direct, const float kForce)
+{
+	//glm::vec3 cameraDirect = ExtractDirectionVector(getMatrix());
+	glm::vec3 cameraDirect = RotateVectorByMatrix({0.f, 1.f, 0.f}, getMatrix());
+
+	cout << "cameraDirect: ["; help::PrintXYZ(cameraDirect, ", ", 0); cout << "]" << endl;
 	cameraDirect.z = 0.f;
 	cameraDirect = glm::normalize(cameraDirect);
 
@@ -101,13 +141,19 @@ void Glider::Move(const MoveDirect direct, const float kForce) {
 	{
 	case MoveDirect::FORVARD:
 		vectorForce += cameraDirect * force * kForce;
+		_force += vectorForce;
+		//cout << "direct: " << (int)direct << "["; help::PrintXYZ(cameraDirect, ", ", 0); cout << "] ["; help::PrintXYZ(vectorForce, ", ", 1); cout << "] => ";
+		//vectorForce = {  1.f, 0.f, 0.f };
 		break;
 
 	case MoveDirect::BACK:
+		//vectorForce = { -1.f,0.f, 0.f };
 		vectorForce -= cameraDirect * force * kForce;
+		_force += vectorForce;
+		//cout << "direct: " << (int)direct << "["; help::PrintXYZ(cameraDirect, ", ", 0); cout << "] ["; help::PrintXYZ(vectorForce, ", ", 1); cout << "] = >";
 		break;
 
-	case MoveDirect::LEFT:
+	/*case MoveDirect::LEFT:
 		vectorForce.x -= (cameraDirect.y * force * kForce);
 		vectorForce.y += (cameraDirect.x * force * kForce);
 		break;
@@ -124,19 +170,22 @@ void Glider::Move(const MoveDirect direct, const float kForce) {
 	case MoveDirect::DOWN:
 		vectorForce.z -= abs(force * kForce);
 		break;
-
+		*/
 	case MoveDirect::FORVARD_HORIZONT:
-		vectorForce.x += (cameraDirect.x * force * kForce);
-		vectorForce.y += (cameraDirect.y * force * kForce);
+		//vectorForce.x += (cameraDirect.x * force * kForce);
+		//vectorForce.y += (cameraDirect.y * force * kForce);
 		break;
 
 	case MoveDirect::BACK_HORIZONT:
-		vectorForce.x -= (cameraDirect.x * force * kForce);
-		vectorForce.y -= (cameraDirect.y * force * kForce);
+		//vectorForce.x -= (cameraDirect.x * force * kForce);
+		//vectorForce.y -= (cameraDirect.y * force * kForce);
 		break;
 	}
 
-	this->addForce(vectorForce);
+	//addForce(vectorForce);
+
+
+	//_force += glm::vec3(vectorForce.x, vectorForce.y, 0.f);
 }
 
 const Params& Glider::GetParams()
@@ -147,147 +196,218 @@ const Params& Glider::GetParams()
 	return *paramsPtr;
 }
 
-float limitRange(float value, float min = 0.f, int max = 1.f) {
-	if (value < min) {
-		return min;  // Если значение меньше минимального, возвращаем минимальное
-	}
-	if (value > max) {
-		return max;  // Если значение больше максимального, возвращаем максимальное
-	}
-	return value;  // Если значение в пределах диапазона, возвращаем его без изменений
-}
-
 void Glider::action()
 {
+	DrawDebug();
+
 	// Высота
-	if (GetHeight() < GetParams().height) {
-		glm::vec3 velocity = GetLinearVelocity();
-		velocity.z = 0.f;
-		SetLinearVelocity(velocity);
+	const float height = GetHeight();
+	const auto& params = GetParams();
 
-		float value = GetParams().height - GetHeight();
-		value /= GetParams().height;
-		value = limitRange(value);
-
-		glm::vec3 vector{ 0.f, 0.f, value };
-		addForce(vector, Engine::Physics::Force::VELOCITY_CHANGE);
+	// ВЫсота
+	if (height < GetParams().height)
+	{
+		float velocityZ = GetLinearVelocity().z;
+		float delta = std::max(0.f, GetParams().height - height);
+		volatile static float liftingForce = 1.f;
+		volatile static float damping = 1.0f;
+		float forceZ = delta * params.liftingForce - velocityZ  * params.liftingDamping;
+		glm::vec3 vector = { 0.f, 0.f, forceZ };
+		_force += vector;
 	}
 
 	// Стабилизация
+	/*{
+		glm::mat4x4  mat = getMatrix();
+		glm::quat q = glm::quat_cast(mat);
+		glm::quat target;
+		glm::quat delta = glm::normalize(glm::inverse(q) * target);
+
+		float torqueStrength = 15.0f; // Сила возвращения к целевой ориентации
+		float damping = 0.15f;        // Демпфирование угловой скорости
+
+		glm::vec3 axis = glm::eulerAngles(delta) * 3.14159f / 180.f;
+		float angle = glm::angle(delta);
+
+		// Рассчет корректирующего торка
+		glm::vec3 correctiveTorque = axis * (-angle * torqueStrength);
+
+		// Учет угловой скорости (демпфирование)
+		glm::vec3 angularVelocity = GetAngularVelocity();
+		glm::vec3 dampingTorque = angularVelocity * (-damping);
+
+		// Применение суммарного торка
+		_torqueForce = correctiveTorque + dampingTorque;
+	}*/
+
+	// Рыскание
 	{
-		auto mat = this->getMatrix();
-		glm::vec4 direct(0.f, 0.f, 1.f, 0.f);
-		direct = mat * direct;
-		glm::vec4 directDebug = direct;
-		directDebug.z = 0.f;
-		volatile static int _ver0_ = 1;
-		volatile static int _ver1_ = 1;
+		Stabilization();
+	}
 
-		if (_ver0_ == 0) {
-			static float factor = 0.1f;
-			direct.y = direct.y * factor;
-			direct.x = direct.x * factor;
-		}
-		else if (_ver0_ == 1) {
-			static float factor = 1.91f;
-			{
-				if (direct.y != 0.f) {
-					float sign = direct.y / std::abs(direct.y);
-					direct.y = direct.y * direct.y * sign * factor;
-				}
+	//...
+	addTorque(_torqueForce);
+
+	//cout << " FINAL: ["; help::PrintXYZ(_force, ", ", 1); cout << "]" << endl;
+	addForce(_force);
+	ResetForce();
+}
+
+void Glider::Stabilization()
+{
+	glm::mat4x4  mat = getMatrix();
+	
+	//static float rotateZ = 0.f;
+
+	/*{
+		auto AngleXY = [](const auto& vec0, const auto& vec1) {
+			// Расчёт длины векторов
+			auto Magnitude = [](const auto& vec) {
+				return std::sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
+			};
+
+			// Основной вектор: вычисление угла
+			float magnitudeProduct = Magnitude(vec0) * Magnitude(vec1);
+			if (magnitudeProduct == 0.0f) return 0.0f; // Защита от деления на ноль
+
+			float angleMain = ((vec0[0] * vec1[1]) - (vec0[1] * vec1[0])) / magnitudeProduct;
+
+			// Вспомогательный вектор: вычисление угла
+			auto vecOrthogonal = glm::vec2(vec0[1], -vec0[0]); // Перпендикулярный вектор
+			float magnitudeOrthogonal = Magnitude(vecOrthogonal) * Magnitude(vec1);
+			if (magnitudeOrthogonal == 0.0f) return 0.0f;
+
+			float angleAuxiliary = ((vecOrthogonal[0] * vec1[1]) - (vecOrthogonal[1] * vec1[0])) / magnitudeOrthogonal;
+
+			// Коррекция знака основного угла
+			if (angleMain < 0.0f) {
+				if (angleAuxiliary < 0.0f) angleMain = -1.0f - (1.0f + angleMain);
 			}
-			{
-				if (direct.x != 0.f) {
-					float sign = direct.x / std::abs(direct.x);
-					direct.x = direct.x * direct.x * sign * factor;
-				}
+			else if (angleMain > 0.0f) {
+				if (angleAuxiliary < 0.0f) angleMain = 1.0f + (1.0f - angleMain);
 			}
+
+			return angleMain / 2.0f;
+		};
+
+		glm::vec4 _direct4_ = mat * glm::vec4(0.f, 1.f, 0.f, 0.f);
+		glm::vec3 _direct3_ = glm::normalize(glm::vec3(_direct4_.x, _direct4_.y, 0.f));
+
+		auto camDirect = Camera::GetLink().Direct();
+		glm::vec3 _camdirect3_ = glm::normalize(glm::vec3(camDirect.x, camDirect.y, 0.f));
+
+		rotateZ = -AngleXY(_direct3_, _camdirect3_) * 3.14159265358979323846264338327950288;
+		help::log(rotateZ);
+	}*/
+
+	mat = glm::rotate(mat, rotateZ, { 0.f, 0.f, 1.f });
+	//rotateZ = 0;
+
+	glm::quat q = glm::quat_cast(mat);
+
+	float torqueStrength = 15.0f; // Сила возвращения к целевой ориентации
+	float damping = 0.15f;        // Демпфирование угловой скорости
+
+	glm::vec3 axis = glm::eulerAngles(q) * 3.14159f / 180.f;
+	float angle = glm::angle(q);
+
+	// Рассчет корректирующего торка
+	glm::vec3 correctiveTorque = axis * (-angle * torqueStrength);
+
+	// Учет угловой скорости (демпфирование)
+	glm::vec3 angularVelocity = GetAngularVelocity();
+	glm::vec3 dampingTorque = angularVelocity * (-damping);
+
+	// Применение суммарного торка
+	_torqueForce += correctiveTorque + dampingTorque;
+}
+
+glm::vec3 Glider::Rotate()
+{
+	auto AngleXY = [](const auto& vec0, const auto& vec1) {
+		// Расчёт длины векторов
+		auto Magnitude = [](const auto& vec) {
+			return std::sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
+		};
+
+		// Основной вектор: вычисление угла
+		float magnitudeProduct = Magnitude(vec0) * Magnitude(vec1);
+		if (magnitudeProduct == 0.0f) return 0.0f; // Защита от деления на ноль
+
+		float angleMain = ((vec0[0] * vec1[1]) - (vec0[1] * vec1[0])) / magnitudeProduct;
+
+		// Вспомогательный вектор: вычисление угла
+		auto vecOrthogonal = glm::vec2(vec0[1], -vec0[0]); // Перпендикулярный вектор
+		float magnitudeOrthogonal = Magnitude(vecOrthogonal) * Magnitude(vec1);
+		if (magnitudeOrthogonal == 0.0f) return 0.0f;
+
+		float angleAuxiliary = ((vecOrthogonal[0] * vec1[1]) - (vecOrthogonal[1] * vec1[0])) / magnitudeOrthogonal;
+
+		// Коррекция знака основного угла
+		if (angleMain < 0.0f) {
+			if (angleAuxiliary < 0.0f) angleMain = -1.0f - (1.0f + angleMain);
+		}
+		else if (angleMain > 0.0f) {
+			if (angleAuxiliary < 0.0f) angleMain = 1.0f + (1.0f - angleMain);
 		}
 
-		direct.z = 0.f;
+		return angleMain / 2.0f;
+	};
 
-		glm::vec3 forceAngularVelocity(direct.y, -direct.x, 0.f);
-		const glm::vec3 angularVelocity = GetAngularVelocity();
 
-		if (_ver1_ == 1) {
-			// X
-			{
-				float sign0 = false;
-				float sign1 = false;
-				if (direct.x != 0) {
-					sign0 = direct.x / std::abs(direct.x);
-				}
-				if (angularVelocity.y != 0) {
-					sign1 = !angularVelocity.y / std::abs(angularVelocity.y);
-				}
-				if ((sign0 > 0 && sign1 > 0) || (sign0 < 0 && sign1 < 0)) {
-					forceAngularVelocity.x = 0.f;
-				}
-			}
-			// Y
-			{
-				float sign0 = false;
-				float sign1 = false;
-				if (direct.y != 0) {
-					sign0 = direct.y / std::abs(direct.y);
-				}
-				if (angularVelocity.x != 0) {
-					sign1 = !angularVelocity.x / std::abs(angularVelocity.x);
-				}
-				if ((sign0 > 0 && sign1 > 0) || (sign0 < 0 && sign1 < 0)) {
-					forceAngularVelocity.y = 0.f;
-				}
-			}
-		}
+	glm::vec3 directCameraV3 = Camera::GetLink().Direct();
+	glm::vec3 directCamera = glm::normalize(glm::vec3(directCameraV3.x, directCameraV3.y, 0.f));
 
-		float len = glm::length(forceAngularVelocity);
-		static float minValue = 0.00001f;
-		if (len > minValue) {
-			addTorque(forceAngularVelocity, _torqueForceType);
-		}
+	glm::vec4 directV4 = getMatrix() * glm::vec4(0.f, 1.f, 0.f, 1.f);
+	glm::vec3 direct = glm::normalize(glm::vec3(directV4.x, directV4.y, 0.f));
+	
+	volatile static float factor = 0.01f;
+	volatile static float damping = 0.01f;
 
-		if (length(directDebug) < 0.001f) {
-			this->SetAngularVelocity({0.f, 0.f, 0.f});
-		}
+	glm::vec3 angularVelocity = GetAngularVelocity();
+	float dampingTorque = angularVelocity.z * (-damping);
 
-		glm::vec3 forceAngularVelocityDebug;
-		forceAngularVelocityDebug.x = forceAngularVelocity.y;
-		forceAngularVelocityDebug.y = -forceAngularVelocity.x;
-		forceAngularVelocityDebug.z = 0.f;
-		//cout << "direct: [" << directDebug.x << ", " << directDebug.y << ", " << directDebug.z << "] vel: [" << angularVelocity.x << ", " << angularVelocity.y << ", " << angularVelocity.z << "] force: [" << forceAngularVelocityDebug.x << ", " << forceAngularVelocityDebug.y << ", " << forceAngularVelocityDebug.z << "]\n";
+	float angle = AngleXY(directCamera, direct) * factor + dampingTorque;
 
-		DrawDebug(forceAngularVelocity);
+	//cout << "[" << directCamera.x << ", " << directCamera.y << "]" "[" << direct.x << ", " << direct.y << "]" << "angle: " << angle << endl;
 
-		// Debug
-		{
-			this->addTorque(_torqueForce, Engine::Physics::Force::VELOCITY_CHANGE);
-			_torqueForce.x = 0.f;
-			_torqueForce.y = 0.f;
-		}
+	volatile static bool _b_ = true;
+	if (_b_) {
+		return glm::vec3(0.f, 0.f, angle);
+	}
+	else {
+		return glm::vec3(0.f, 0.f, 0.f);
 	}
 }
 
 void Glider::Update()
 {
-	_velocity = this->GetLinearVelocity();
-	_angularVelocity = this->GetAngularVelocity();
-	_vectorAngularVelocity.x = _angularVelocity.y;
-	_vectorAngularVelocity.y = -_angularVelocity.x;
-	_vectorAngularVelocity.z = 0.f;
-
-	cout << "v: [" << _velocity.x << ", " << _velocity.y << ", " << _velocity.z << "] av: [" << _angularVelocity.x << ", " << _angularVelocity.y << ", " << _angularVelocity.z << "] vav: [" << _vectorAngularVelocity.x << ", " << _vectorAngularVelocity.y << ", " << _vectorAngularVelocity.z << "]" << endl;
 }
 
 float Glider::GetHeight()
 {
-	float height = getPos().z;
+	static glm::vec3 directDown(0.f, 0.f, -1.f);
+	glm::vec3 pos = getPos();
+	pos.z += 1.f;
+	const glm::vec3 hitPos = Engine::Physics::Raycast(pos, directDown);
+	float height = pos.z - hitPos.z;
 	return height;
 }
 
-// Debug
-void Glider::DrawDebug(const glm::vec3& angularVelocity)
+void Glider::ResetForce()
 {
-	Draw2::AddFunction([this, angularVelocity]() mutable {
+	_force.x = 0.f;
+	_force.y = 0.f;
+	_force.z = 0.f;
+	_torqueForce.x = 0.f;
+	_torqueForce.y = 0.f;
+	_torqueForce.z = 0.f;
+}
+
+// Debug
+void Glider::DrawDebug()
+{
+	Draw2::AddFunction([this]() mutable {
 		{
 			ShaderLinePM::Instance().Use();
 
@@ -378,19 +498,19 @@ void Glider::DrawDebug(const glm::vec3& angularVelocity)
 			// Force
 			{
 				// X
-				{
+				/*{
 					float red[] = { 1.f, 0.9f, 0.9f, 1.f };
 					Draw2::SetColorClass<ShaderLinePM>(red);
-					glm::vec4 direct(angularVelocity.x, angularVelocity.y, angularVelocity.z, 1.f);
+					glm::vec4 direct(_vectorTorqueForce.x, _vectorTorqueForce.y, _vectorTorqueForce.z, 1.f);
 					direct = getMatrix() * direct;
 					direct *= 100.f;
 					const float vertices[] = { 0.f, 0.f, 0.f, direct.x, direct.y, direct.z };
 					const unsigned int count = 2;
 					Draw2::drawLines(vertices, count);
-				}
+				}*/
 
 				// Y
-				{
+				/*{
 					float green[] = { 0.9f, 1.f, 0.9f, 1.f };
 					Draw2::SetColorClass<ShaderLinePM>(green);
 					glm::vec4 direct(angularVelocity.x, angularVelocity.y, angularVelocity.z, 1.f);
@@ -411,7 +531,7 @@ void Glider::DrawDebug(const glm::vec3& angularVelocity)
 					const float vertices[] = { 0.f, 0.f, 0.f, direct.x, direct.y, direct.z };
 					const unsigned int count = 2;
 					Draw2::drawLines(vertices, count);
-				}
+				}*/
 			}
 		}
 
