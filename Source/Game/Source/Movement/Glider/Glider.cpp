@@ -308,27 +308,29 @@ void Glider::Stabilization()
 			return angleMain / 2.0f;
 		};
 
-		glm::vec4 _direct4_ = mat * glm::vec4(0.f, 1.f, 0.f, 0.f);
+		glm::vec4 _direct4_ = /*mat **/ glm::vec4(0.f, -1.f, 0.f, 0.f);
 		glm::vec3 _direct3_ = glm::normalize(glm::vec3(_direct4_.x, _direct4_.y, 0.f));
 
 		auto camDirect = Camera::GetLink().Direct();
 		glm::vec3 _camdirect3_ = glm::normalize(glm::vec3(camDirect.x, camDirect.y, 0.f));
 
-		//rotateZ = 90;// 57.2958f; // -90;// -AngleXY(_direct3_, _camdirect3_);// *3.14159265358979323846264338327950288;
-		rotateZ = -AngleXY(_direct3_, _camdirect3_) * 0.5 * 3.14159265358979323846264338327950288;
-		//help::log(rotateZ);
+		volatile static bool _bbb_ = true;
+		if (_bbb_) {
+			rotateZ = AngleXY(_camdirect3_, _direct3_) * 3.14159265358979323846264338327950288f;
+			//rotateZ = -AngleXY(_camdirect3_, _direct3_) * 3.14159265358979323846264338327950288f;
+		}
 	}
-
+		
 	mat = glm::rotate(mat, rotateZ, { 0.f, 0.f, 1.f });
+
 	help::log(rotateZ);
-	//rotateZ = 0;
 
 	glm::quat q = glm::quat_cast(mat);
 
 	float torqueStrength = 15.0f; // Сила возвращения к целевой ориентации
 	float damping = 0.15f;        // Демпфирование угловой скорости
 
-	glm::vec3 axis = glm::eulerAngles(q) * 3.14159f / 180.f;
+	glm::vec3 axis = glm::eulerAngles(q) * 3.14159265358979323846264338327950288f / 180.f;
 	float angle = glm::angle(q);
 
 	// Рассчет корректирующего торка

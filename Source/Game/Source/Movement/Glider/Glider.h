@@ -47,6 +47,7 @@ private:
 	glm::vec3 _force = { 0.f, 0.f, 0.f };
 	glm::vec3 _torqueForce = { 0.f, 0.f, 0.f };
 	float rotateZ = 0;
+	float rotateZ2 = 0;
 	Engine::Physics::Force _torqueForceType = Engine::Physics::Force::VELOCITY_CHANGE;
 
 	glm::vec3 _camera_;
