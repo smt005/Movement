@@ -28,6 +28,10 @@ void Glider::EnableControl(bool enable)
 {
 	if (!_callbackPtr && enable) {
 		_callbackPtr = std::make_shared<Engine::Callback>(Engine::CallbackType::PINCH_KEY, [this](const Engine::CallbackEventPtr& callbackEventPtr) {
+			if (Engine::Callback::pressKey(Engine::VirtualKey::F1)) {
+				ResetPosition();
+			}
+
 			float kForce = 1.0;
 
 			if (Engine::Callback::pressKey(Engine::VirtualKey::CONTROL)) {
@@ -79,9 +83,7 @@ void Glider::EnableControl(bool enable)
 			}
 
 			// Height
-			if (Engine::Callback::pressKey(Engine::VirtualKey::Y)) {
-				paramsPtr->height += 10;
-			}
+
 			if (Engine::Callback::pressKey(Engine::VirtualKey::H)) {
 				paramsPtr->height -= 10;
 			}
@@ -100,6 +102,12 @@ void Glider::EnableControl(bool enable)
 				else if (Engine::Callback::pressKey(Engine::VirtualKey::VK_3)) {
 					_torqueForceType = Engine::Physics::Force::VELOCITY_CHANGE;
 				}
+			}
+		});
+
+		_callbackPtr->add(Engine::CallbackType::PRESS_KEY, [this](const Engine::CallbackEventPtr& callbackEventPtr) {
+			if (Engine::Callback::pressKey(Engine::VirtualKey::Y)) {
+				_b_ = !_b_;
 			}
 		});
 	}
@@ -246,7 +254,7 @@ void Glider::action()
 
 	// Рыскание
 	{
-		//Stabilization();
+		Stabilization();
 	}
 
 	//...
@@ -513,11 +521,21 @@ void Glider::DrawDebug()
 				{
 					float white[] = { 1.f, 1.f, 1.f, 1.f };
 					Draw2::SetColorClass<ShaderLinePM>(white);
-					glm::vec3 camera = _camera_;
-					camera *= 100.f;
-					const float vertices[] = { 0.f, 0.f, 0.f, camera.x, camera.y, camera.z };
-					const unsigned int count = 2;
-					Draw2::drawLines(vertices, count);
+					
+					static glm::vec3 cameraZZZ;
+					if (_b_) {
+						glm::vec3 camera = _camera_;
+						camera *= 100.f;
+						cameraZZZ = camera;
+						const float vertices[] = { 0.f, 0.f, 0.f, camera.x, camera.y, camera.z };
+						const unsigned int count = 2;
+						Draw2::drawLines(vertices, count);
+					}
+					else {
+						const float vertices[] = { 0.f, 0.f, 0.f, cameraZZZ.x, cameraZZZ.y, cameraZZZ.z };
+						const unsigned int count = 2;
+						Draw2::drawLines(vertices, count);
+					}
 				}
 
 				// Y
@@ -548,4 +566,11 @@ void Glider::DrawDebug()
 
 	return false;
 	});
+}
+
+void Glider::ResetPosition()
+{
+	SetLinearVelocity({ 0.f, 0.f , 0.f });
+	SetAngularVelocity({ 0.f, 0.f , 0.f });
+	setActorPos({ 0.f, 0.f , 75.f });
 }

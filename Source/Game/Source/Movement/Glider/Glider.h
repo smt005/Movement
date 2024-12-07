@@ -39,6 +39,7 @@ private:
 
 private:
 	void DrawDebug();
+	void ResetPosition();
 
 private:
 	Engine::Callback::Ptr _callbackPtr;
@@ -49,4 +50,5 @@ private:
 	Engine::Physics::Force _torqueForceType = Engine::Physics::Force::VELOCITY_CHANGE;
 
 	glm::vec3 _camera_;
+	bool _b_ = true;
 };
