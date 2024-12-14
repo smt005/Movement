@@ -13,6 +13,7 @@
 #include "Glider/Glider.h"
 #include "ImGuiManager/UI.h"
 #include "ImGuiManager/Editor/Console.h"
+#include "Cameras/CameraGlider.h"
 
 ModelPtr _skyboxModel;
 
@@ -35,6 +36,10 @@ void Movement::close()
 
 void Movement::update()
 {
+	/*if (CameraGlider* cameraPtr = dynamic_cast<CameraGlider*>(_camearCurrent.get())) {
+		cameraPtr->Rotate(Engine::Callback::deltaMousePos());
+	}*/
+
 	if (_mapGame) {
 		volatile static double deltaTime = 1.f;
 		if (Engine::Physics::updateScene(deltaTime)) {
@@ -44,7 +49,7 @@ void Movement::update()
 		_mapGame->action();
 
 		// Player
-		if (CameraControlOutside* cameraPtr = dynamic_cast<CameraControlOutside*>(_camearCurrent.get())) {
+		if (CameraGlider* cameraPtr = dynamic_cast<CameraGlider*>(_camearCurrent.get())) {
 			if (Glider* objectPtr = dynamic_cast<Glider*>(_mapGame->getObjectPtrByName("Player").get())) {
 				objectPtr->Update();
 				const glm::vec3 pos = objectPtr->getPos();
@@ -114,14 +119,31 @@ void Movement::Save()
 
 void Movement::InitСameras()
 {
-	_camearCurrent = std::make_shared<CameraControlOutside>();
-	if (CameraControlOutside* cameraPtr = dynamic_cast<CameraControlOutside*>(_camearCurrent.get())) {
+	_camearCurrent = std::make_shared<CameraGlider>();
+	if (CameraGlider* cameraPtr = dynamic_cast<CameraGlider*>(_camearCurrent.get())) {
 		cameraPtr->SetPerspective(10000000.f, 1.f, 45.f);
-		cameraPtr->SetPos({ 50.f, 50.f, 50.f });
+		cameraPtr->SetPos({ 150.f, 150.f, 150.f });
 		cameraPtr->SetDirect({ -0.524f, -0.514f, -0.679f });
-		cameraPtr->SetDistanceOutside(50.f);
+		cameraPtr->SetDistanceOutside(75.f);
 		cameraPtr->SetSpeed(1.0);
 		cameraPtr->Enable(true);
+
+		cameraPtr->GetCallbackPtr()->add(Engine::CallbackType::SCROLL, [cameraPtr](const Engine::CallbackEventPtr& callbackEventPtr) {
+			if (static_cast<Engine::TapCallbackEvent*>(callbackEventPtr.get())->getId() == Engine::VirtualTap::SCROLL_BOTTOM) {
+				float dist = cameraPtr->GetDistanceOutside();
+				dist += 10.f;
+				if (dist < 1000.f) {
+					cameraPtr->SetDistanceOutside(dist);
+				}
+			}
+			if (static_cast<Engine::TapCallbackEvent*>(callbackEventPtr.get())->getId() == Engine::VirtualTap::SCROLL_UP) {
+				float dist = cameraPtr->GetDistanceOutside();
+				dist -= 10.f;
+				if (dist > 25.f) {
+					cameraPtr->SetDistanceOutside(dist);
+				}
+			}
+		});
 	}
 }
 
@@ -192,7 +214,8 @@ void Movement::GenerateMap()
 		}
 
 		// Player
-		Object::Ptr gliderPtr(new Glider("Player", "Car", { 0.f, 0.f, 50.f }));
+		//Object::Ptr gliderPtr(new Glider("Player", "Car", { 0.f, 0.f, 50.f }));
+		Object::Ptr gliderPtr(new Glider("Player", "NLO", { 0.f, 0.f, 50.f }));
 		static_cast<Glider*>(gliderPtr.get())->EnableControl(true);
 		_mapGame->addObject(gliderPtr);
 	}

@@ -55,6 +55,10 @@
     "scale": 5,
 	"texture" : "Textures/Common/metal_texture_00.jpg"
   },
+  "NLO": {
+    "shape": "Models/NLO.obj",
+	"texture" : "Textures/Common/Metal_01.jpg"
+  },
   "Sphere": {
     "shape": "Models/Sphere_01.obj",
     "texture": "Textures/Ambient.png",

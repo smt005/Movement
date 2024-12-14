@@ -12,6 +12,7 @@
 #include <Physics/Physics.h>
 #include <Common/PrintTemplate.h>
 //#include "glm/ext/matrix_transform.hpp"
+#include <glm/gtx/vector_angle.hpp>
 
 #include <Common/Help.h>
 #include <Draw/Camera/CameraControlOutside.h>
@@ -48,12 +49,12 @@ void Glider::EnableControl(bool enable)
 				Move(MoveDirect::BACK, kForce);
 			}
 			if (Engine::Callback::pressKey(Engine::VirtualKey::A)) {
-				//Move(MoveDirect::LEFT, kForce);
-				rotateZ += -0.01;
+				Move(MoveDirect::LEFT, kForce);
+				//rotateZ += -0.051;
 			}
 			if (Engine::Callback::pressKey(Engine::VirtualKey::D)) {
-				//Move(MoveDirect::RIGHT, kForce);
-				rotateZ += 0.01;
+				Move(MoveDirect::RIGHT, kForce);
+				//rotateZ += 0.051;
 			}
 			if (Engine::Callback::pressKey(Engine::VirtualKey::R)) {
 				//Move(MoveDirect::FORVARD_HORIZONT, kForce);
@@ -137,7 +138,7 @@ void Glider::Move(const MoveDirect direct, const float kForce)
 {
 	//glm::vec3 cameraDirect = ExtractDirectionVector(getMatrix());
 	//glm::vec3 cameraDirect = RotateVectorByMatrix({0.f, 1.f, 0.f}, getMatrix());
-	glm::vec4 _cameraDirect_ = getMatrix()* glm::vec4(0.f, 1.f, 0.f, 0.f);
+	glm::vec4 _cameraDirect_ = getMatrix()* glm::vec4(0.f, -1.f, 0.f, 0.f);
 	glm::vec3 cameraDirect = { _cameraDirect_.x, _cameraDirect_.y, 0.f };
 
 	cout << "cameraDirect: ["; help::PrintXYZ(cameraDirect, ", ", 0); cout << "]" << endl;
@@ -163,17 +164,19 @@ void Glider::Move(const MoveDirect direct, const float kForce)
 		//cout << "direct: " << (int)direct << "["; help::PrintXYZ(cameraDirect, ", ", 0); cout << "] ["; help::PrintXYZ(vectorForce, ", ", 1); cout << "] = >";
 		break;
 
-	/*case MoveDirect::LEFT:
+	case MoveDirect::LEFT:
 		vectorForce.x -= (cameraDirect.y * force * kForce);
 		vectorForce.y += (cameraDirect.x * force * kForce);
+		_force += vectorForce;
 		break;
 
 	case MoveDirect::RIGHT:
 		vectorForce.x += (cameraDirect.y * force * kForce);
 		vectorForce.y -= (cameraDirect.x * force * kForce);
+		_force += vectorForce;
 		break;
 
-	case MoveDirect::TOP:
+	/*case MoveDirect::TOP:
 		vectorForce.z += abs(force * kForce);
 		break;
 
@@ -278,37 +281,27 @@ void Glider::Stabilization()
 	//static float rotateZ = 0.f;
 
 	{
-		auto AngleXY = [](const auto& vec0, const auto& vec1) {
-			// Расчёт длины векторов
-			auto Magnitude = [](const auto& vec) {
-				return std::sqrt(vec[0] * vec[0] + vec[1] * vec[1]);
-			};
+		/*auto AngleXY = [](const auto& v1, const auto& v2) {
+			// Нормализация векторов (на случай, если они не нормализованы)
+			glm::vec3 norm_v1 = glm::normalize(v1);
+			glm::vec3 norm_v2 = glm::normalize(v2);
 
-			// Основной вектор: вычисление угла
-			float magnitudeProduct = Magnitude(vec0) * Magnitude(vec1);
-			if (magnitudeProduct == 0.0f) return 0.0f; // Защита от деления на ноль
+			// Скалярное произведение
+			float dotProduct = glm::dot(norm_v1, norm_v2);
 
-			float angleMain = ((vec0[0] * vec1[1]) - (vec0[1] * vec1[0])) / magnitudeProduct;
+			// Убедимся, что значение dot находится в диапазоне [-1, 1] (может потребоваться из-за числовых погрешностей)
+			dotProduct = glm::clamp(dotProduct, -1.0f, 1.0f);
 
-			// Вспомогательный вектор: вычисление угла
-			auto vecOrthogonal = glm::vec2(vec0[1], -vec0[0]); // Перпендикулярный вектор
-			float magnitudeOrthogonal = Magnitude(vecOrthogonal) * Magnitude(vec1);
-			if (magnitudeOrthogonal == 0.0f) return 0.0f;
+			// Угол в радианах
+			float angleRadians = glm::acos(dotProduct);
 
-			float angleAuxiliary = ((vecOrthogonal[0] * vec1[1]) - (vecOrthogonal[1] * vec1[0])) / magnitudeOrthogonal;
+			// Преобразование угла в градусы (опционально)
+			float angleDegrees = glm::degrees(angleRadians);
 
-			// Коррекция знака основного угла
-			if (angleMain < 0.0f) {
-				if (angleAuxiliary < 0.0f) angleMain = -1.0f - (1.0f + angleMain);
-			}
-			else if (angleMain > 0.0f) {
-				if (angleAuxiliary < 0.0f) angleMain = 1.0f + (1.0f - angleMain);
-			}
-
-			return angleMain / 2.0f;
+			return angleDegrees;
 		};
 
-		glm::vec4 _direct4_ = /*mat **/ glm::vec4(0.f, -1.f, 0.f, 0.f);
+		glm::vec4 _direct4_ =  glm::vec4(0.f, -1.f, 0.f, 0.f);
 		glm::vec3 _direct3_ = glm::normalize(glm::vec3(_direct4_.x, _direct4_.y, 0.f));
 
 		auto camDirect = Camera::GetLink().Direct();
@@ -316,22 +309,54 @@ void Glider::Stabilization()
 
 		volatile static bool _bbb_ = true;
 		if (_bbb_) {
-			rotateZ = AngleXY(_camdirect3_, _direct3_) * 3.14159265358979323846264338327950288f;
-			//rotateZ = -AngleXY(_camdirect3_, _direct3_) * 3.14159265358979323846264338327950288f;
-		}
+			rotateZ = AngleXY(_camdirect3_, _direct3_) * glm::pi<float>() / 180.f;
+		}*/
+
+		/*{
+			cout << "  0: " << AngleXY(glm::vec3{ 0.f, 1.f, 0.f }, glm::vec3{ 0.f, 1.f, 0.f }) << endl;
+			cout << " 45: " << AngleXY(glm::vec3{ 0.f, 1.f, 0.f }, glm::vec3{ 1.f, 1.f, 0.f }) << endl;
+			cout << " 90: " << AngleXY(glm::vec3{ 0.f, 1.f, 0.f }, glm::vec3{ 1.f, 0.f, 0.f }) << endl;
+			cout << "135: " << AngleXY(glm::vec3{ 0.f, 1.f, 0.f }, glm::vec3{ 1.f, -1.f, 0.f }) << endl;
+			cout << "180: " << AngleXY(glm::vec3{ 0.f, 1.f, 0.f }, glm::vec3{ 0.f, -1.f, 0.f }) << endl;
+		}*/
 	}
 		
+	{
+		glm::vec4 _direct4_ = glm::vec4(0.f, -1.f, 0.f, 0.f);
+		glm::vec3 _direct3_ = glm::normalize(glm::vec3(_direct4_.x, _direct4_.y, 0.f));
+
+		auto camDirect = Camera::GetLink().Direct();
+		glm::vec3 _camdirect3_ = glm::normalize(glm::vec3(camDirect.x, camDirect.y, 0.f));
+
+		//...
+		float dotProduct = glm::dot(_direct3_, _camdirect3_);
+		glm::vec3 crossProduct = glm::cross(_direct3_, _camdirect3_);
+
+		// Угол в радианах
+		float angleRadians = glm::atan(glm::length(crossProduct), dotProduct);
+		if (crossProduct.z < 0) {
+			angleRadians = -angleRadians;
+		}
+		std::cout << "Угол: " << glm::degrees(angleRadians) << " градусов" << std::endl;
+
+		rotateZ = -angleRadians;
+	}
+
+	//rotateZ = glm::angle(_direct3_, _camdirect3_);
+	//rotateZ = glm::degrees(rotateZ);
+
 	mat = glm::rotate(mat, rotateZ, { 0.f, 0.f, 1.f });
 
 	help::log(rotateZ);
 
 	glm::quat q = glm::quat_cast(mat);
 
-	float torqueStrength = 15.0f; // Сила возвращения к целевой ориентации
-	float damping = 0.15f;        // Демпфирование угловой скорости
+	static float torqueStrength = 5.0f; // Сила возвращения к целевой ориентации
+	static float damping = 1.f;        // Демпфирование угловой скорости
 
-	glm::vec3 axis = glm::eulerAngles(q) * 3.14159265358979323846264338327950288f / 180.f;
+	glm::vec3 axis = glm::eulerAngles(q);// *glm::pi<float>();// 180.f;
 	float angle = glm::angle(q);
+	help::log(std::to_string(rotateZ) + " - "s + std::to_string(angle));
 
 	// Рассчет корректирующего торка
 	glm::vec3 correctiveTorque = axis * (-angle * torqueStrength);
