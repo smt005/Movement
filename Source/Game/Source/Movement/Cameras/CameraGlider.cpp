@@ -94,6 +94,10 @@ void CameraGlider::MakeCallback() {
 			Move(Engine::Callback::deltaMousePos() * (float)Engine::Core::deltaTime());
 		}
 	});
+
+#if _DEBUG
+	_callbackPtr->debugName = "CameraGlider";
+#endif
 }
 
 void CameraGlider::Move(const MoveDirect direct, const float kForce) {

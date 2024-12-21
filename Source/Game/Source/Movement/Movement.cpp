@@ -14,7 +14,7 @@
 #include "ImGuiManager/UI.h"
 #include "ImGuiManager/Editor/Console.h"
 #include "Cameras/CameraGlider.h"
-#include "../../Engine/Source/Callback/Callback.h"
+#include <Callback/Callback.h>
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -29,6 +29,7 @@ void Movement::init()
 	InitСameras();
 	Load();
 	InitPhysic();
+	InitCallback();
 
 	UI::ShowWindow<Editor::Console>();
 }
@@ -40,10 +41,6 @@ void Movement::close()
 
 void Movement::update()
 {
-	/*if (CameraGlider* cameraPtr = dynamic_cast<CameraGlider*>(_camearCurrent.get())) {
-		cameraPtr->Rotate(Engine::Callback::deltaMousePos());
-	}*/
-
 	if (_mapGame) {
 		volatile static double deltaTime = 1.f;
 		if (Engine::Physics::updateScene(deltaTime)) {
@@ -52,12 +49,12 @@ void Movement::update()
 
 		_mapGame->action();
 
-		// Player
-		if (CameraGlider* cameraPtr = dynamic_cast<CameraGlider*>(_camearCurrent.get())) {
-			if (Glider* objectPtr = dynamic_cast<Glider*>(_mapGame->getObjectPtrByName("Player").get())) {
-				//objectPtr->Update();
-				const glm::vec3 pos = objectPtr->getPos();
-				cameraPtr->SetPosOutside(pos);
+		if (!_cameraType) {
+			if (CameraGlider* cameraPtr = dynamic_cast<CameraGlider*>(_camearCurrent.get())) {
+				if (Glider* objectPtr = GetPlayerGlider()) {
+					const glm::vec3 pos = objectPtr->getPos();
+					cameraPtr->SetPosOutside(pos);
+				}
 			}
 		}
 	}
@@ -79,7 +76,7 @@ void Movement::draw()
 
 		static float rotateZ = 0.f;
 		mat = glm::rotate(mat, rotateZ, {0.f, 0.f, 1.f});
-		//rotateZ += 0.0001f;
+		rotateZ += 0.0001f;
 		ShaderDefault::Instance().Use();
 		Draw2::SetModelMatrixClass<ShaderDefault>(mat);
 
@@ -167,6 +164,27 @@ void Movement::InitPhysic() {
 	_mapGame->initPhysixs();
 }
 
+void Movement::InitCallback()
+{
+	_callbackPtr = std::make_shared<Engine::Callback>(Engine::CallbackType::RELEASE_KEY, [this](const Engine::CallbackEventPtr& callbackEventPtr) {
+#if _DEBUG
+		if (dynamic_cast<Engine::KeyCallbackEvent*>(callbackEventPtr.get())->_id == Engine::VirtualKey::F1) {
+			if (Engine::Callback::pressKey(Engine::VirtualKey::CONTROL)) {
+				_cameraType = !_cameraType;
+
+				if (Glider* glider = GetPlayerGlider()) {
+					glider->EnableControl(!_cameraType);
+				}
+			}
+		}
+#endif
+	});
+
+#if _DEBUG
+	_callbackPtr->debugName = "Movement";
+#endif
+}
+
 void Movement::GenerateMap()
 {
 	if (_mapGame = make_shared<Map>("PhysX/MapPhysX")) {
@@ -189,7 +207,6 @@ void Movement::GenerateMap()
 				case 6: nameModel = "Kolonna_300x300_100"; break;
 				default: nameModel = "Kolonna_300x300_0";
 				};
-				//cout << "model: " << numEnding << " => " << nameModel << endl;
 
 				Object& object = _mapGame->addObjectToPos(nameModel, { iX, iY, 0.f });
 				object.setTypeActorPhysics(Engine::Physics::Type::TRIANGLE);
@@ -223,4 +240,9 @@ void Movement::GenerateMap()
 		static_cast<Glider*>(gliderPtr.get())->EnableControl(true);
 		_mapGame->addObject(gliderPtr);
 	}
+}
+
+Glider* Movement::GetPlayerGlider()
+{
+	return  dynamic_cast<Glider*>(_mapGame->getObjectPtrByName("Player").get());
 }

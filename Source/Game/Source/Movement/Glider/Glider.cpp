@@ -40,11 +40,15 @@ void Glider::EnableControl(bool enable)
 			}
 
 #if _DEBUG
-			if (Engine::Callback::pressKey(Engine::VirtualKey::F1)) {
+			if (Engine::Callback::pressKey(Engine::VirtualKey::F12)) {
 				ResetPosition();
 			}
 #endif
 		});
+
+#if _DEBUG
+		_callbackPtr->debugName = "Glider";
+#endif
 	}
 
 	if (!enable && _callbackPtr) {
