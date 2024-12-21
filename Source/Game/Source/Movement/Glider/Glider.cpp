@@ -3,7 +3,7 @@
 #include "Glider.h"
 #include "GliderParams.h"
 #include <Common/Help.h>
-#include "../../Engine/Source/Callback/Callback.h"
+#include <Callback/Callback.h>
 
 #if _DEBUG
 #include <Draw/Camera/CameraControlOutside.h>
@@ -109,70 +109,44 @@ void Glider::action()
 
 void Glider::Stabilization()
 {
-	// Высота
 	const float height = GetHeight();
 	const auto& params = GetParams();
 
-	// ВЫсота
-	if (height < GetParams().height)
-	{
-		float velocityZ = GetLinearVelocity().z;
-		float delta = std::max(0.f, GetParams().height - height);
-		volatile static float liftingForce = 1.f;
-		volatile static float damping = 1.0f;
-		float forceZ = delta * params.liftingForce - velocityZ * params.liftingDamping;
-		glm::vec3 vector = { 0.f, 0.f, forceZ };
-		_force += vector;
+	// ...
+	if (height < GetParams().height) {
+		const float velocityZ = GetLinearVelocity().z;
+		const float delta = std::max(0.f, GetParams().height - height);
+		const float forceZ = delta * params.liftingForce - velocityZ * params.liftingDamping;
+		_force.z += forceZ;
 	}
 
-	glm::mat4x4  mat = getMatrix();
+	glm::mat4x4 mat = getMatrix();
 
-	float rotateZ = 0.f;
-	{
-		glm::vec4 _direct4_ = glm::vec4(0.f, -1.f, 0.f, 0.f);
-		glm::vec3 _direct3_ = glm::normalize(glm::vec3(_direct4_.x, _direct4_.y, 0.f));
+	//...
+	const glm::vec4 directV4 = glm::vec4(0.f, -1.f, 0.f, 0.f);
+	const glm::vec3 direct = glm::normalize(glm::vec3(directV4.x, directV4.y, 0.f));
 
-		auto camDirect = Camera::GetLink().Direct();
-		glm::vec3 _camdirect3_ = glm::normalize(glm::vec3(camDirect.x, camDirect.y, 0.f));
+	const glm::vec3 camDirect = Camera::GetLink().Direct();
+	const glm::vec3 camdirect = glm::normalize(glm::vec3(camDirect.x, camDirect.y, 0.f));
 
-		//...
-		float dotProduct = glm::dot(_direct3_, _camdirect3_);
-		glm::vec3 crossProduct = glm::cross(_direct3_, _camdirect3_);
+	const float dotProduct = glm::dot(direct, camdirect);
+	const glm::vec3 crossProduct = glm::cross(direct, camdirect);
 
-		// Угол в радианах
-		float angleRadians = glm::atan(glm::length(crossProduct), dotProduct);
-		if (crossProduct.z < 0) {
-			angleRadians = -angleRadians;
-		}
-
-		rotateZ = -angleRadians;
+	float angleRadians = glm::atan(glm::length(crossProduct), dotProduct);
+	if (crossProduct.z < 0) {
+		angleRadians = -angleRadians;
 	}
 
-	mat = glm::rotate(mat, rotateZ, { 0.f, 0.f, 1.f });
+	mat = glm::rotate(mat, -angleRadians, { 0.f, 0.f, 1.f });
+	
+	//...
+	const glm::quat quat = glm::quat_cast(mat);
+	const glm::vec3 axis = glm::eulerAngles(quat);
+	const float angle = glm::angle(quat);
+	const glm::vec3 correctiveTorque = axis * (-angle * params.stabilizationForce);
+	const glm::vec3 angularVelocity = GetAngularVelocity();
+	const glm::vec3 dampingTorque = angularVelocity * (-params.stabilizationDamping);
 
-
-	glm::quat q = glm::quat_cast(mat);
-
-	glm::vec3 axis = glm::eulerAngles(q);
-
-	float angle = glm::angle(q);
-	static float angleMax = 0.f;
-	angleMax = std::max(angleMax, angle);
-	help::log(std::to_string(rotateZ) + " - "s + std::to_string(angle) + " - " + std::to_string(angleMax));
-
-	static float damping = 1.f;        // Демпфирование угловой скорости
-
-	static float torqueStrength = 10.0f;// *std::max(0.f, (4.7f - angle)); // Сила возвращения к целевой ориентации
-	//static float torqueStrength = 1.f; // Сила возвращения к целевой ориентации
-
-	// Рассчет корректирующего торка
-	glm::vec3 correctiveTorque = axis * (-angle * torqueStrength);
-
-	// Учет угловой скорости (демпфирование)
-	glm::vec3 angularVelocity = GetAngularVelocity();
-	glm::vec3 dampingTorque = angularVelocity * (-damping);
-
-	// Применение суммарного торка
 	_torqueForce += correctiveTorque + dampingTorque;
 }
 
