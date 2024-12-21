@@ -49,12 +49,13 @@ void Movement::update()
 
 		_mapGame->action();
 
-		if (!_cameraType) {
-			if (CameraGlider* cameraPtr = dynamic_cast<CameraGlider*>(_camearCurrent.get())) {
+		if (CameraGlider* cameraPtr = dynamic_cast<CameraGlider*>(_camearCurrent.get())) {
+			if (!_cameraType) {
 				if (Glider* objectPtr = GetPlayerGlider()) {
 					const glm::vec3 pos = objectPtr->getPos();
 					cameraPtr->SetPosOutside(pos);
 				}
+				cameraPtr->Rotate(Engine::Callback::deltaMousePos());
 			}
 		}
 	}
