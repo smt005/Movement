@@ -14,6 +14,10 @@
 #include "ImGuiManager/UI.h"
 #include "ImGuiManager/Editor/Console.h"
 #include "Cameras/CameraGlider.h"
+#include "../../Engine/Source/Callback/Callback.h"
+
+#include <stdio.h>
+#include <stdarg.h>
 
 ModelPtr _skyboxModel;
 
@@ -51,7 +55,7 @@ void Movement::update()
 		// Player
 		if (CameraGlider* cameraPtr = dynamic_cast<CameraGlider*>(_camearCurrent.get())) {
 			if (Glider* objectPtr = dynamic_cast<Glider*>(_mapGame->getObjectPtrByName("Player").get())) {
-				objectPtr->Update();
+				//objectPtr->Update();
 				const glm::vec3 pos = objectPtr->getPos();
 				cameraPtr->SetPosOutside(pos);
 			}
@@ -75,7 +79,7 @@ void Movement::draw()
 
 		static float rotateZ = 0.f;
 		mat = glm::rotate(mat, rotateZ, {0.f, 0.f, 1.f});
-		rotateZ += 0.0001f;
+		//rotateZ += 0.0001f;
 		ShaderDefault::Instance().Use();
 		Draw2::SetModelMatrixClass<ShaderDefault>(mat);
 
