@@ -6,6 +6,11 @@
 
 class Camera;
 class Map;
+class Glider;
+
+namespace Engine {
+	class Callback;
+}
 
 class Movement final : public Engine::Game
 {
@@ -22,10 +27,18 @@ public:
 
 	void InitСameras();
 	void InitPhysic();
+	void InitCallback();
 	bool Load();
 	void Save();
+	void GenerateMap();
+
+private:
+	Glider* GetPlayerGlider();
 
 public:
 	std::shared_ptr<Map> _mapGame;
 	std::shared_ptr<Camera> _camearCurrent;
+	std::shared_ptr<Engine::Callback> _callbackPtr;
+
+	bool _cameraType = false;
 };
