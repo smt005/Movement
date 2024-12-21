@@ -141,7 +141,7 @@ void Glider::Move(const MoveDirect direct, const float kForce)
 	glm::vec4 _cameraDirect_ = getMatrix()* glm::vec4(0.f, -1.f, 0.f, 0.f);
 	glm::vec3 cameraDirect = { _cameraDirect_.x, _cameraDirect_.y, 0.f };
 
-	cout << "cameraDirect: ["; help::PrintXYZ(cameraDirect, ", ", 0); cout << "]" << endl;
+	//cout << "cameraDirect: ["; help::PrintXYZ(cameraDirect, ", ", 0); cout << "]" << endl;
 	cameraDirect.z = 0.f;
 	cameraDirect = glm::normalize(cameraDirect);
 
@@ -337,7 +337,7 @@ void Glider::Stabilization()
 		if (crossProduct.z < 0) {
 			angleRadians = -angleRadians;
 		}
-		std::cout << "Угол: " << glm::degrees(angleRadians) << " градусов" << std::endl;
+		//std::cout << "Угол: " << glm::degrees(angleRadians) << " градусов" << std::endl;
 
 		rotateZ = -angleRadians;
 	}
@@ -347,16 +347,22 @@ void Glider::Stabilization()
 
 	mat = glm::rotate(mat, rotateZ, { 0.f, 0.f, 1.f });
 
-	help::log(rotateZ);
+	//help::log(rotateZ);
 
 	glm::quat q = glm::quat_cast(mat);
 
-	static float torqueStrength = 5.0f; // Сила возвращения к целевой ориентации
+	glm::vec3 axis = glm::eulerAngles(q);// *glm::pi<float>();// 180.f;
+
+
+	float angle = glm::angle(q);
+	static float angleMax = 0.f;
+	angleMax = std::max(angleMax, angle);
+	help::log(std::to_string(rotateZ) + " - "s + std::to_string(angle) + " - " + std::to_string(angleMax));
+
 	static float damping = 1.f;        // Демпфирование угловой скорости
 
-	glm::vec3 axis = glm::eulerAngles(q);// *glm::pi<float>();// 180.f;
-	float angle = glm::angle(q);
-	help::log(std::to_string(rotateZ) + " - "s + std::to_string(angle));
+	static float torqueStrength = 10.0f;// *std::max(0.f, (4.7f - angle)); // Сила возвращения к целевой ориентации
+	//static float torqueStrength = 1.f; // Сила возвращения к целевой ориентации
 
 	// Рассчет корректирующего торка
 	glm::vec3 correctiveTorque = axis * (-angle * torqueStrength);
