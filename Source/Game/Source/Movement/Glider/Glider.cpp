@@ -4,9 +4,9 @@
 #include "GliderParams.h"
 #include <Common/Help.h>
 #include <Callback/Callback.h>
+#include <Draw/Camera/Camera.h>
 
 #if _DEBUG
-#include <Draw/Camera/CameraControlOutside.h>
 #include <Draw2/Draw2.h>
 #include <Draw2/Shader/ShaderLine.h>
 #endif
