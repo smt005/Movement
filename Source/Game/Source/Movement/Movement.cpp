@@ -171,10 +171,15 @@ void Movement::InitPhysic() {
 void Movement::InitCallback()
 {
 	_callbackPtr = std::make_shared<Engine::Callback>(Engine::CallbackType::RELEASE_KEY, [this](const Engine::CallbackEventPtr& callbackEventPtr) {
+		if (dynamic_cast<Engine::KeyCallbackEvent*>(callbackEventPtr.get())->_id == Engine::VirtualKey::ESCAPE) {
+			Engine::Core::close();
+		}
+
 #if _DEBUG
 		if (dynamic_cast<Engine::KeyCallbackEvent*>(callbackEventPtr.get())->_id == Engine::VirtualKey::F1) {
 			if (Engine::Callback::pressKey(Engine::VirtualKey::CONTROL)) {
 				_cameraType = !_cameraType;
+				Engine::Callback::SetResetMouseToCenter(!_cameraType);
 
 				if (Glider* glider = GetPlayerGlider()) {
 					glider->EnableControl(!_cameraType);
