@@ -34,6 +34,7 @@ public:
 
 private:
 	Glider* GetPlayerGlider();
+	void SetCurrentMap(const std::string& name);
 
 public:
 	std::shared_ptr<Map> _mapGame;

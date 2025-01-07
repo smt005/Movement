@@ -1,75 +1,85 @@
 {
   "Plane100": {
-    "shape": "Models/Plane100.obj",
-	"texture" : "Textures/Common/metal_texture_00.jpg"
+    "shape"  : "Models/Plane100.obj"                 ,
+    "texture": "Textures/Common/metal_texture_00.jpg"
   },
-   "Kolonna_300x300_0": {
-	"shape": "Models/Locations/Kolonna/Kolonna_300x300_0.obj",
-	"texture" : "Textures/Common/Zak.jpg"
+  "Kolonna_300x300_0": {
+    "shape"  : "Models/Locations/Kolonna/Kolonna_300x300_0.obj",
+    "texture": "Textures/Common/Zak.jpg"
   },
   "Kolonna_300x300_10": {
-	"shape": "Models/Locations/Kolonna/Kolonna_300x300_10.obj",
-	"texture" : "Textures/Common/Zak.jpg"
+    "shape"  : "Models/Locations/Kolonna/Kolonna_300x300_10.obj",
+    "texture": "Textures/Common/Zak.jpg"
   },
   "Kolonna_300x300_20": {
-	"shape": "Models/Locations/Kolonna/Kolonna_300x300_20.obj",
-	"texture" : "Textures/Common/Zak.jpg"
+    "shape"  : "Models/Locations/Kolonna/Kolonna_300x300_20.obj",
+    "texture": "Textures/Common/Zak.jpg"
   },
   "Kolonna_300x300_30": {
-	"shape": "Models/Locations/Kolonna/Kolonna_300x300_30.obj",
-	"texture" : "Textures/Common/Zak.jpg"
+    "shape"  : "Models/Locations/Kolonna/Kolonna_300x300_30.obj",
+    "texture": "Textures/Common/Zak.jpg"
   },
   "Kolonna_300x300_40": {
-	"shape": "Models/Locations/Kolonna/Kolonna_300x300_40.obj",
-	"texture" : "Textures/Common/Zak.jpg"
+    "shape"  : "Models/Locations/Kolonna/Kolonna_300x300_40.obj",
+    "texture": "Textures/Common/Zak.jpg"
   },
   "Kolonna_300x300_50": {
-	"shape": "Models/Locations/Kolonna/Kolonna_300x300_50.obj",
-	"texture" : "Textures/Common/Zak.jpg"
+    "shape"  : "Models/Locations/Kolonna/Kolonna_300x300_50.obj",
+    "texture": "Textures/Common/Zak.jpg"
   },
   "Kolonna_300x300_100": {
-	"shape": "Models/Locations/Kolonna/Kolonna_300x300_100.obj",
-	"texture" : "Textures/Common/Zak.jpg"
+    "shape"  : "Models/Locations/Kolonna/Kolonna_300x300_100.obj",
+    "texture": "Textures/Common/Zak.jpg"
   },
   "Kolonna_300x300_100_280": {
-	"shape": "Models/Locations/Kolonna/Kolonna_300x300_100_280.obj",
-	"texture" : "Textures/Common/Zak.jpg"
+    "shape"  : "Models/Locations/Kolonna/Kolonna_300x300_100_280.obj",
+    "texture": "Textures/Common/Zak.jpg"
   },
-  "Box1": {
-    "shape": "Models/Box1.obj",
-    "texture": "Textures/Common/Box.jpg"
-  },
+  "Box1": {"shape": "Models/Box1.obj", "texture": "Textures/Common/Box.jpg"},
   "BoxSmooth50": {
     "shape": "Models/BoxSmooth50.obj",
     "texture": "Textures/Common/Green_00.jpg",
-	"scale": 0.5
+    "scale": 0.5
   },
   "SphereBox": {
     "shape": "Models/Sphere_01.obj",
     "texture": "Textures/Common/Box.jpg",
     "scale": 2
   },
-   "Car": {
+  "Car": {
     "shape": "Models/Car.obj",
-    "_texture": "Textures/Common/Box.jpg",
     "scale": 5,
-	"texture" : "Textures/Common/metal_texture_00.jpg"
+    "texture": "Textures/Common/metal_texture_00.jpg"
   },
   "NLO": {
-    "shape": "Models/NLO.obj",
-	"texture" : "Textures/Common/Metal_01.jpg"
+    "shape"  : "Models/NLO.obj"              ,
+    "texture": "Textures/Common/Metal_01.jpg"
+  },
+  "Portal": {
+    "shape"  : "Models/Portal00.obj"      ,
+    "texture": "Textures/Common/Black.jpg"
   },
   "Sphere": {
     "shape": "Models/Sphere_01.obj",
     "texture": "Textures/Ambient.png",
-    "scale": [
-      2,
-      2,
-      2
-    ]
+    "scale": [2, 2, 2]
   },
-  "SkyBox" : {
-	"shape" : "Models/SkyBox/SkyBox.obj",
-	"texture": "Textures/SkyBox/SkyBox.jpg"
+  "Sphere50": {
+    "shape": "Models/Sphere_01.obj",
+    "texture": "Textures/Ambient.png",
+    "scale": [50, 50, 50]
+  },
+  "Sphere25": {
+    "shape": "Models/Sphere_01.obj",
+    "texture": "Textures/Ambient.png",
+    "scale": [25, 25, 25]
+  },
+  "SkyBox": {
+    "shape"  : "Models/SkyBox/SkyBox.obj"  ,
+    "texture": "Textures/SkyBox/SkyBox.jpg"
+  },
+  "Terrain00": {
+    "shape"  : "Models/Locations/Terrain00.obj",
+    "texture": "Textures/Common/Green_00.jpg"
   }
 }

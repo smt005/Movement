@@ -1,0 +1,8 @@
+{
+  "name": "PhysX/MapGreen",
+  "backColor": [0.6, 0.8, 1, 1],
+  "objects": [
+    { "model": "Terrain00", "physics": "triangle", "pos": [ 0,  0,  0] },
+    { "model": "Portal"   , "physics": "triangle", "pos": [50, 50, 50] }
+  ]
+}

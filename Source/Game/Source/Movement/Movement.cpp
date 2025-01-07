@@ -2,6 +2,7 @@
 
 #include "Movement.h"
 #include <Core.h>
+#include <Log.h>
 #include <Common/Help.h>
 #include <Draw/Camera/CameraControlOutside.h>
 #include <Draw2/Draw2.h>
@@ -9,6 +10,7 @@
 #include <Draw2/Shader/ShaderLine.h>
 #include "Object/Map.h"
 #include <Object/Object.h>
+#include <Object/Trigger/Trigger.h>
 #include <Object/Model.h>
 #include "Glider/Glider.h"
 #include "ImGuiManager/UI.h"
@@ -111,7 +113,8 @@ void Movement::resize()
 
 bool Movement::Load()
 {
-	GenerateMap();
+	//GenerateMap();
+	SetCurrentMap("PhysX/MapPhysX");
 	return true;
 }
 
@@ -188,11 +191,12 @@ void Movement::InitCallback()
 
 void Movement::GenerateMap()
 {
-	if (_mapGame = make_shared<Map>("PhysX/MapPhysX")) {
+	if (_mapGame = Map::getByName("PhysX/MapPhysX")) {
 		Draw2::SetClearColor(_mapGame->getRed(), _mapGame->getGreen(), _mapGame->getBlue(), _mapGame->getAlpha());
 
+		/*
 		int size = 900;
-
+		
 		for (int iX = -size; iX <= size; iX += 300) {
 			for (int iY = -size; iY <= size; iY += 300) {
 				std::string nameModel;
@@ -235,15 +239,53 @@ void Movement::GenerateMap()
 			object.setTypeActorPhysics(Engine::Physics::Type::TRIANGLE);
 		}
 
-		// Player
-		//Object::Ptr gliderPtr(new Glider("Player", "Car", { 0.f, 0.f, 50.f }));
-		Object::Ptr gliderPtr(new Glider("Player", "NLO", { 0.f, 0.f, 50.f }));
-		static_cast<Glider*>(gliderPtr.get())->EnableControl(true);
-		_mapGame->addObject(gliderPtr);
+		// Portals
+		{
+			Object& object = _mapGame->addObjectToPos("Portal", { 50.f, 50.f, 50.f });
+			object.setTypeActorPhysics(Engine::Physics::Type::TRIANGLE);
+			
+		}
+
+		_mapGame->Save();
+		*/
 	}
 }
 
 Glider* Movement::GetPlayerGlider()
 {
 	return  dynamic_cast<Glider*>(_mapGame->getObjectPtrByName("Player").get());
+}
+void Movement::SetCurrentMap(const std::string& name)
+{
+	_mapGame = Map::getByName(name);
+	InitPhysic();
+
+	{
+		Object::Ptr objectPtr = _mapGame->getObjectPtrByName("Player");
+		if (!objectPtr) {
+			Object::Ptr gliderPtr(new Glider("Player", "NLO", glm::vec3(150.f, 450.f, 100.f)));
+			static_cast<Glider*>(gliderPtr.get())->EnableControl(true);
+			_mapGame->addObject(gliderPtr);
+		}
+
+		// Triggers
+		{
+			const std::string triggerName = "Trigger00";
+			if (Trigger::CenterDistance* trigger = new Trigger::CenterDistance({ 150.f, 600.f, 50.f }, 50.f, triggerName)) {
+				_mapGame->additObjects.emplace_back(trigger);
+
+				if (auto glider = _mapGame->getObjectPtrByName("Player")) {
+					trigger->AddObject(glider, [this]() {
+						Log("SET: {}", "PhysX/MapGreen");
+						SetCurrentMap("PhysX/MapGreen");
+					});
+				}
+
+				trigger->SetDistance(25.f);
+
+				Object::Ptr triggerObjectPtr(new Object(triggerName, "Sphere25", { 150.f, 600.f, 50.f }));
+				_mapGame->addObject(triggerObjectPtr);
+			}
+		}
+	}
 }
