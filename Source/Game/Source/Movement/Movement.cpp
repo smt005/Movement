@@ -1,6 +1,8 @@
 // ◦ Xyz ◦
 
 #include "Movement.h"
+#include <stdio.h>
+#include <stdarg.h>
 #include <Core.h>
 #include <Log.h>
 #include <Common/Help.h>
@@ -18,10 +20,8 @@
 #include "Cameras/CameraGlider.h"
 #include <Callback/Callback.h>
 
-#include <stdio.h>
-#include <stdarg.h>
-
 ModelPtr _skyboxModel;
+std::map<std::string, std::string> _portalDirect;
 
 void Movement::init()
 {
@@ -114,7 +114,11 @@ void Movement::resize()
 bool Movement::Load()
 {
 	//GenerateMap();
+	_portalDirect.emplace("PhysX/MapPhysX", "PhysX/MapGreen");
+	_portalDirect.emplace("PhysX/MapGreen", "PhysX/MapPhysX");
+
 	SetCurrentMap("PhysX/MapPhysX");
+
 	return true;
 }
 
@@ -260,36 +264,61 @@ Glider* Movement::GetPlayerGlider()
 {
 	return  dynamic_cast<Glider*>(_mapGame->getObjectPtrByName("Player").get());
 }
+
 void Movement::SetCurrentMap(const std::string& name)
 {
+	if (name.empty()) {
+		return;
+	}
+	if (_mapGame) {
+		_mapGame->RemoveObject("Player");
+		_mapGame->releasePhysixs();
+	}
+
 	_mapGame = Map::getByName(name);
 	InitPhysic();
 
-	{
-		Object::Ptr objectPtr = _mapGame->getObjectPtrByName("Player");
-		if (!objectPtr) {
-			Object::Ptr gliderPtr(new Glider("Player", "NLO", glm::vec3(150.f, 450.f, 100.f)));
-			static_cast<Glider*>(gliderPtr.get())->EnableControl(true);
-			_mapGame->addObject(gliderPtr);
+	Object::Ptr playerPtr = _mapGame->getObjectPtrByName("Player");
+	if (!playerPtr) {
+		Object::Ptr playerPtr(new Glider("Player", "NLO", glm::vec3(0.f, 0.f, 50.f)));
+		static_cast<Glider*>(playerPtr.get())->EnableControl(true);
+		_mapGame->addObject(playerPtr);
+	}
+
+	playerPtr = _mapGame->getObjectPtrByName("Player");
+	if (playerPtr) {
+		Object::Ptr portalPtr = _mapGame->getObjectPtrByName("Portal00");
+		if (portalPtr) {
+			glm::vec3 pos = portalPtr->getPos();
+			glm::vec3 posTop(pos.x, pos.y, pos.z + 50.f);
+			playerPtr->setPos(posTop);
+
+			Log("SET: {} -> {} pos: [{}]", _portalDirect[_mapGame->getName()], _mapGame->getName(), posTop);
 		}
+	}
 
-		// Triggers
-		{
-			const std::string triggerName = "Trigger00";
-			if (Trigger::CenterDistance* trigger = new Trigger::CenterDistance({ 150.f, 600.f, 50.f }, 50.f, triggerName)) {
-				_mapGame->additObjects.emplace_back(trigger);
+	// Triggers
+	{
+		const std::string triggerName = "Trigger00";
+		Trigger::CenterDistance* trigger = dynamic_cast<Trigger::CenterDistance*>(_mapGame->GetAdditObjectsByName(triggerName).get());
+		if (!trigger) {
+			Object::Ptr portalPtr = _mapGame->getObjectPtrByName("Portal00");
 
-				if (auto glider = _mapGame->getObjectPtrByName("Player")) {
-					trigger->AddObject(glider, [this]() {
-						Log("SET: {}", "PhysX/MapGreen");
-						SetCurrentMap("PhysX/MapGreen");
-					});
-				}
+			if (portalPtr) {
+				glm::vec3 pos = portalPtr->getPos();
 
-				trigger->SetDistance(25.f);
-
-				Object::Ptr triggerObjectPtr(new Object(triggerName, "Sphere25", { 150.f, 600.f, 50.f }));
+				Object::Ptr triggerObjectPtr(new Object(triggerName, "Sphere25", pos));
 				_mapGame->addObject(triggerObjectPtr);
+
+				trigger = new Trigger::CenterDistance(pos, 25.f, triggerName);
+				_mapGame->additObjects.emplace_back(trigger);
+			}
+		}
+		if (trigger) {
+			if (auto glider = _mapGame->getObjectPtrByName("Player")) {
+				trigger->AddObject(glider, [this]() {
+					SetCurrentMap(_portalDirect[_mapGame->getName()]);
+				});
 			}
 		}
 	}

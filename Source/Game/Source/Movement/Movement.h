@@ -2,6 +2,7 @@
 #pragma once
 
 #include <memory>
+#include <map>
 #include <Game.h>
 
 class Camera;
