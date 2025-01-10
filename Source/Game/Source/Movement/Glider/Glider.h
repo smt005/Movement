@@ -3,7 +3,8 @@
 
 #include <memory>
 #include <glm/vec3.hpp>
-#include "Object/Object.h"
+#include "Weapon.h"
+#include <Object/Object.h>
 
 namespace Engine {
 	class Callback;
@@ -41,6 +42,7 @@ private:
 	void Stabilization();
 	float GetHeight();
 	void ResetForce();
+	void Shot();
 
 private:
 #if _DEBUG
@@ -53,4 +55,5 @@ private:
 	glm::vec3 _torqueForce = { 0.f, 0.f, 0.f };
 	CallbackPtr _callbackPtr;
 	ParamsPtr paramsPtr;
+	Weapon _weapon;
 };

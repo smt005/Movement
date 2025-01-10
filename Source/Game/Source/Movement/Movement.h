@@ -38,7 +38,7 @@ private:
 	void SetCurrentMap(const std::string& name);
 
 public:
-	std::shared_ptr<Map> _mapGame;
+	//std::shared_ptr<Map> _mapGame;
 	std::shared_ptr<Camera> _camearCurrent;
 	std::shared_ptr<Engine::Callback> _callbackPtr;
 

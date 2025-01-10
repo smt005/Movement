@@ -81,5 +81,9 @@
   "Terrain00": {
     "shape"  : "Models/Locations/Terrain00.obj",
     "texture": "Textures/Common/Green_00.jpg"
+  },
+  "BulletCone": {
+    "shape"  : "Models/Weapon/BulletCone.obj",
+    "texture": "Textures/Colors/White.png"
   }
 }

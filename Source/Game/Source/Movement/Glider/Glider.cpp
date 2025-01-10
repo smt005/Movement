@@ -1,10 +1,12 @@
 ﻿// ◦ Xyz ◦
 
 #include "Glider.h"
+#include <Log.h>
 #include "GliderParams.h"
 #include <Common/Help.h>
 #include <Callback/Callback.h>
 #include <Draw/Camera/Camera.h>
+#include <Object/Map.h>
 
 #if _DEBUG
 #include <Draw2/Draw2.h>
@@ -44,6 +46,12 @@ void Glider::EnableControl(bool enable)
 				ResetPosition();
 			}
 #endif
+		});
+		
+		_callbackPtr->add(Engine::CallbackType::PINCH_TAP, [this](const Engine::CallbackEventPtr& callbackEventPtr) {
+			if (Engine::Callback::pressTap(Engine::VirtualTap::LEFT)) {
+				Shot();
+			}
 		});
 
 #if _DEBUG
@@ -100,11 +108,14 @@ const Params& Glider::GetParams()
 
 void Glider::action()
 {
-	Stabilization();
+	if (_callbackPtr) {
+		Stabilization();
+		addTorque(_torqueForce);
+		addForce(_force);
+		ResetForce();
+	}
 
-	addTorque(_torqueForce);
-	addForce(_force);
-	ResetForce();
+	_weapon.Update();
 
 #if _DEBUG
 	DrawDebug();
@@ -172,6 +183,14 @@ void Glider::ResetForce()
 	_torqueForce.x = 0.f;
 	_torqueForce.y = 0.f;
 	_torqueForce.z = 0.f;
+}
+
+void Glider::Shot()
+{
+	constexpr glm::vec4 directForward(0.f, -1.f, 0.f, 0.f);
+	glm::vec4 gliderDirectV4 = getMatrix() * directForward;
+	glm::vec3 gliderDirect = glm::normalize(glm::vec3(gliderDirectV4.x, gliderDirectV4.y, gliderDirectV4.z));
+	_weapon.Shot(getPos(), gliderDirect);
 }
 
 #if _DEBUG
