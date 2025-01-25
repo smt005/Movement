@@ -1,6 +1,6 @@
 {
   "Plane100": {
-    "shape"  : "Models/Plane100.obj"                 ,
+    "shape"  : "Models/Plane100.obj",
     "texture": "Textures/Common/metal_texture_00.jpg"
   },
   "Kolonna_300x300_0": {
@@ -34,6 +34,18 @@
   "Kolonna_300x300_100_280": {
     "shape"  : "Models/Locations/Kolonna/Kolonna_300x300_100_280.obj",
     "texture": "Textures/Common/Zak.jpg"
+  },
+  "MountainousRelief_00": {
+    "shape"  : "Models/Locations/MountainousRelief/MountainousRelief_00.obj",
+    "texture": "Textures/White/Wave.jpg"
+  },
+  "MountainousRelief_01": {
+    "shape"  : "Models/Locations/MountainousRelief/MountainousRelief_01.obj",
+    "texture": "Textures/White/Wave.jpg"
+  },
+  "MountainousRelief_02": {
+    "shape"  : "Models/Locations/MountainousRelief/MountainousRelief_02.obj",
+    "texture": "Textures/White/Wave.jpg"
   },
   "Box1": {"shape": "Models/Box1.obj", "texture": "Textures/Common/Box.jpg"},
   "BoxSmooth50": {
@@ -77,10 +89,6 @@
   "SkyBox": {
     "shape"  : "Models/SkyBox/SkyBox.obj"  ,
     "texture": "Textures/SkyBox/SkyBox.jpg"
-  },
-  "Terrain00": {
-    "shape"  : "Models/Locations/Terrain00.obj",
-    "texture": "Textures/Common/Green_00.jpg"
   },
   "BulletCone": {
     "shape"  : "Models/Weapon/BulletCone.obj",

@@ -1,6 +1,6 @@
 {
   "name": "PhysX/MapPhysX",
-  "backColor": [ 0.6, 0.8, 1, 1],
+  "backColor": [0.6, 0.8, 1, 1],
   "objects": [
     {
       "model": "Kolonna_300x300_100",
@@ -469,6 +469,13 @@
       "name": "Portal00",
       "physics": "triangle",
       "pos": [150.0, 500.0, 50.0]
+    }
+	,
+    {
+      "model": "Portal",
+      "name": "Portal01",
+      "physics": "triangle",
+      "pos": [225.0, 500.0, 50.0]
     }
   ]
 }

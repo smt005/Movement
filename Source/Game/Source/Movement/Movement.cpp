@@ -116,8 +116,8 @@ void Movement::resize()
 bool Movement::Load()
 {
 	//GenerateMap();
-	_portalDirect.emplace("PhysX/MapPhysX", "PhysX/MapGreen");
-	_portalDirect.emplace("PhysX/MapGreen", "PhysX/MapPhysX");
+	_portalDirect.emplace("PhysX/MapPhysX", "PhysX/MapMountainousRelief");
+	_portalDirect.emplace("PhysX/MapMountainousRelief", "PhysX/MapPhysX");
 
 	SetCurrentMap("PhysX/MapPhysX");
 
@@ -288,7 +288,7 @@ void Movement::SetCurrentMap(const std::string& name)
 
 	Object::Ptr playerPtr = currentMap->getObjectPtrByName("Player");
 	if (!playerPtr) {
-		Object::Ptr playerPtr(new Glider("Player", "NLO", glm::vec3(0.f, 0.f, 50.f)));
+		Object::Ptr playerPtr(new Glider("Player", "NLO", glm::vec3(0.f, 0.f, 1000.f)));
 		static_cast<Glider*>(playerPtr.get())->EnableControl(true);
 		currentMap->addObject(playerPtr);
 	}
@@ -298,7 +298,7 @@ void Movement::SetCurrentMap(const std::string& name)
 		Object::Ptr portalPtr = currentMap->getObjectPtrByName("Portal00");
 		if (portalPtr) {
 			glm::vec3 pos = portalPtr->getPos();
-			glm::vec3 posTop(pos.x, pos.y, pos.z + 50.f);
+			glm::vec3 posTop(pos.x + 75.f, pos.y, pos.z);
 			playerPtr->setPos(posTop);
 
 			Log("SET: {} -> {} pos: [{}]", _portalDirect[currentMap->getName()], currentMap->getName(), posTop);
