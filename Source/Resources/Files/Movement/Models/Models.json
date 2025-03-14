@@ -35,10 +35,6 @@
     "shape"  : "Models/Locations/Kolonna/Kolonna_300x300_100_280.obj",
     "texture": "Textures/Common/Zak.jpg"
   },
-  "MountainousRelief_00": {
-    "shape"  : "Models/Locations/MountainousRelief/MountainousRelief_00.obj",
-    "texture": "Textures/White/Wave.jpg"
-  },
   "MountainousRelief_01": {
     "shape"  : "Models/Locations/MountainousRelief/MountainousRelief_01.obj",
     "texture": "Textures/White/Wave.jpg"
@@ -46,6 +42,18 @@
   "MountainousRelief_02": {
     "shape"  : "Models/Locations/MountainousRelief/MountainousRelief_02.obj",
     "texture": "Textures/White/Wave.jpg"
+  },
+  "MountainousRelief_01_top": {
+    "shape"  : "Models/Locations/MountainousRelief/MountainousRelief_01_top.obj",
+    "texture": "Textures/Gradient/Gwb.jpg"
+  },
+  "MountainousRelief_00_top": {
+    "shape"  : "Models/Locations/MountainousRelief/MountainousRelief_00_top.obj",
+    "texture": "Textures/Gradient/Gwb.jpg"
+  },
+  "MountainousRelief_02_top": {
+    "shape"  : "Models/Locations/MountainousRelief/MountainousRelief_02_top.obj",
+    "texture": "Textures/Gradient/Gwb.jpg"
   },
   "Box1": {"shape": "Models/Box1.obj", "texture": "Textures/Common/Box.jpg"},
   "BoxSmooth50": {
@@ -69,6 +77,10 @@
   },
   "Portal": {
     "shape"  : "Models/Portal00.obj"      ,
+    "texture": "Textures/Common/Black.jpg"
+  },
+  "Base": {
+    "shape"  : "Models/Buildings/Base_00.obj",
     "texture": "Textures/Common/Black.jpg"
   },
   "Sphere": {

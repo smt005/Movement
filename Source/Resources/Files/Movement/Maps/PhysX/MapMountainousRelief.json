@@ -3,463 +3,469 @@
   "backColor": [0.6, 0.8, 1, 1],
   "objects": [
     {
-      "model": "MountainousRelief_00",
+      "model": "Base",
+      "name": "Base",
+      "physics": "triangle",
+      "pos": [-250.0, -250.0, 100.0]
+    },
+	{
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-900.0, -900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_01",
+      "model": "MountainousRelief_01_top",
       "name": "",
       "physics": "triangle",
       "pos": [-900.0, -600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-900.0, -300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_02",
+      "model": "MountainousRelief_02_top",
       "name": "",
       "physics": "triangle",
       "pos": [-900.0, 0.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-900.0, 300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-900.0, 600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_02",
+      "model": "MountainousRelief_02_top",
       "name": "",
       "physics": "triangle",
       "pos": [-900.0, 900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-600.0, -900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_02",
+      "model": "MountainousRelief_02_top",
       "name": "",
       "physics": "triangle",
       "pos": [-600.0, -600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-600.0, -300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-600.0, 0.0, 0.0]
     },
     {
-      "model": "MountainousRelief_02",
+      "model": "MountainousRelief_02_top",
       "name": "",
       "physics": "triangle",
       "pos": [-600.0, 300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-600.0, 600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-600.0, 900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-300.0, -900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_01",
+      "model": "MountainousRelief_01_top",
       "name": "",
       "physics": "triangle",
       "pos": [-300.0, -600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-300.0, -300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-300.0, 0.0, 0.0]
     },
     {
-      "model": "MountainousRelief_01",
+      "model": "MountainousRelief_01_top",
       "name": "",
       "physics": "triangle",
       "pos": [-300.0, 300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_01",
+      "model": "MountainousRelief_01_top",
       "name": "",
       "physics": "triangle",
       "pos": [-300.0, 600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [-300.0, 900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [0.0, -900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [0.0, -600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [0.0, -300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [0.0, 0.0, 0.0]
     },
     {
-      "model": "MountainousRelief_02",
+      "model": "MountainousRelief_02_top",
       "name": "",
       "physics": "triangle",
       "pos": [0.0, 300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [0.0, 600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_02",
+      "model": "MountainousRelief_02_top",
       "name": "",
       "physics": "triangle",
       "pos": [0.0, 900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_02",
+      "model": "MountainousRelief_02_top",
       "name": "",
       "physics": "triangle",
       "pos": [300.0, -900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [300.0, -600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_01",
+      "model": "MountainousRelief_01_top",
       "name": "",
       "physics": "triangle",
       "pos": [300.0, -300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_01",
+      "model": "MountainousRelief_01_top",
       "name": "",
       "physics": "triangle",
       "pos": [300.0, 0.0, 0.0]
     },
     {
-      "model": "MountainousRelief_02",
+      "model": "MountainousRelief_02_top",
       "name": "",
       "physics": "triangle",
       "pos": [300.0, 300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_01",
+      "model": "MountainousRelief_01_top",
       "name": "",
       "physics": "triangle",
       "pos": [300.0, 600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [300.0, 900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [600.0, -900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_01",
+      "model": "MountainousRelief_01_top",
       "name": "",
       "physics": "triangle",
       "pos": [600.0, -600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_02",
+      "model": "MountainousRelief_02_top",
       "name": "",
       "physics": "triangle",
       "pos": [600.0, -300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [600.0, 0.0, 0.0]
     },
     {
-      "model": "MountainousRelief_01",
+      "model": "MountainousRelief_01_top",
       "name": "",
       "physics": "triangle",
       "pos": [600.0, 300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [600.0, 600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [600.0, 900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_01",
+      "model": "MountainousRelief_01_top",
       "name": "",
       "physics": "triangle",
       "pos": [900.0, -900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_01",
+      "model": "MountainousRelief_01_top",
       "name": "",
       "physics": "triangle",
       "pos": [900.0, -600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [900.0, -300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_02",
+      "model": "MountainousRelief_02_top",
       "name": "",
       "physics": "triangle",
       "pos": [900.0, 0.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [900.0, 300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00",
+      "model": "MountainousRelief_00_top",
       "name": "",
       "physics": "triangle",
       "pos": [900.0, 600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_01",
+      "model": "MountainousRelief_01_top",
       "name": "",
       "physics": "triangle",
       "pos": [900.0, 900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-900.0, -1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-600.0, -1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-300.0, -1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [0.0, -1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [300.0, -1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [600.0, -1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [900.0, -1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-900.0, 1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-600.0, 1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-300.0, 1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [0.0, 1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [300.0, 1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [600.0, 1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [900.0, 1200.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-1200.0, -900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-1200.0, -600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-1200.0, -300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-1200.0, 0.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-1200.0, 300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-1200.0, 600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [-1200.0, 900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [1200.0, -900.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [1200.0, -600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [1200.0, -300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [1200.0, 0.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [1200.0, 300.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [1200.0, 600.0, 0.0]
     },
     {
-      "model": "MountainousRelief_00_280",
+      "model": "MountainousRelief_00_top_280",
       "name": "",
       "physics": "triangle",
       "pos": [1200.0, 900.0, 0.0]
