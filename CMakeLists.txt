@@ -59,15 +59,6 @@ set(GLFW_LIB "${PROJECT_DIR}/../build/Win/Engine/ThirdParty/glfw/src")
 FILE(GLOB_RECURSE GLFW_ALL_INCLUDES ${GLFW_INCLUDES}/*.h)
 FILE(GLOB_RECURSE GLFW_ALL_SOURCES ${GLFW_SOURCE}/*.cpp)
 
-# GLEW
-set(GLEW_NAME glew)
-#set(GLEW_S_NAME glew_s)
-set(GLEW_DIR "${ENGINE_DIR}/ThirdParty/glew")
-set(GLEW_CMAKE_DIR "${GLEW_DIR}/build/cmake")
-set(GLEW_INCLUDES "${GLEW_DIR}/include")
-set(GLEW_SOURCE "${GLEW_DIR}/src")
-set(GLEW_LIB "${PROJECT_DIR}/../lib")
-
 # FreeImage
 set(FREEIMAGE_NAME FreeImage)
 set(FREEIMAGE_DIR "${ENGINE_DIR}/ThirdParty/FreeImage")
@@ -132,13 +123,6 @@ include_directories(${GLFW_INCLUDES})
 link_directories(${GLFW_LIB})
 add_subdirectory(${GLFW_DIR})
 target_link_libraries(${PROJECT_NAME} ${GLFW_NAME})
-
-# glEw
-include_directories(${GLEW_INCLUDES})
-link_directories(${GLEW_LIB})
-add_subdirectory(${GLEW_CMAKE_DIR})
-set_target_properties( ${GLEW_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${PROJECT_DIR}/../Executable")
-target_link_libraries(${PROJECT_NAME} ${GLEW_NAME})
 
 # FreeImage
 include_directories(${FREEIMAGE_INCLUDES})
